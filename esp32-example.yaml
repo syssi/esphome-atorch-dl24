@@ -1,0 +1,36 @@
+substitutions:
+  name: atorch-dl24
+
+esphome:
+  name: ${name}
+  platform: ESP32
+  board: esp-wrover-kit
+
+external_components:
+  - source: github://syssi/esphome-atorch-dl24@main
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: 41:B8:12:0A:A8:37
+    id: dummyload0
+
+sensor:
+  - platform: atorch_dl24
+    ble_client_id: dummyload0
+    battery_level:
+      name: "test"
