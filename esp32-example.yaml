@@ -33,12 +33,12 @@ sensor:
   - platform: atorch_dl24
     ble_client_id: dummyload0
     voltage:
-      name: "{name} voltage"
+      name: "${name} voltage"
     current:
-      name: "{name} current"
+      name: "${name} current"
     power:
-      name: "{name} power"
+      name: "${name} power"
     energy:
-      name: "{name} energy"
+      name: "${name} energy"
     temperature:
-      name: "{name} temperature"
+      name: "${name} temperature"
