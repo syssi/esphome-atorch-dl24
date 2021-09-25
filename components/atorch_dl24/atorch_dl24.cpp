@@ -124,7 +124,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   this->publish_state_(this->voltage_sensor_, voltage);
 
   // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
-  float current =  dl24_get_24bit(7) * 0.001f);
+  float current = dl24_get_24bit(7) * 0.001f;
   this->publish_state_(this->current_sensor_, dl24_get_24bit(7) * 0.001f);
   this->publish_state_(this->power_sensor_, voltage * current);
 
