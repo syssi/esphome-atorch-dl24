@@ -57,7 +57,7 @@ CONFIG_SCHEMA = (
             cv.Optional(CONF_CURRENT): sensor.sensor_schema(
                 UNIT_AMPERE,
                 ICON_EMPTY,
-                1,
+                3,
                 DEVICE_CLASS_CURRENT,
                 STATE_CLASS_MEASUREMENT,
             ),

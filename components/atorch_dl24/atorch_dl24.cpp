@@ -106,8 +106,6 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
     return;
   }
 
-  ESP_LOGD(TAG, "New measurement:");
-
   // Example responses
   //
   // FF.55.01.02.00.00.20.00.4E.20.00.13.FA.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1A.3C.00.00.00.00.09
