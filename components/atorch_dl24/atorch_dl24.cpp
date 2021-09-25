@@ -24,8 +24,6 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Backlight", this->backlight_sensor_);
 }
 
-void AtorchDL24::setup() {}
-
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                      esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -158,8 +156,6 @@ void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
 
   sensor->publish_state(value);
 }
-
-void AtorchDL24::update() {}
 
 }  // namespace atorch_dl24
 }  // namespace esphome

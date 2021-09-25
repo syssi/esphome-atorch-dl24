@@ -44,7 +44,7 @@ SENSORS = [
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
 AtorchDL24 = atorch_dl24_ns.class_(
-    "AtorchDL24", ble_client.BLEClientNode, cg.PollingComponent
+    "AtorchDL24", ble_client.BLEClientNode, cg.Component
 )
 
 CONFIG_SCHEMA = (
@@ -95,7 +95,6 @@ CONFIG_SCHEMA = (
         }
     )
     .extend(ble_client.BLE_CLIENT_SCHEMA)
-    .extend(cv.polling_component_schema("10s"))
 )
 
 

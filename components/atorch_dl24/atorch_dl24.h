@@ -16,10 +16,8 @@ namespace atorch_dl24 {
 
 namespace espbt = esphome::esp32_ble_tracker;
 
-class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComponent {
+class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
  public:
-  void setup() override;
-  void update() override;
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                            esp_ble_gattc_cb_param_t *param) override;
   void dump_config() override;
