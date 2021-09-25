@@ -36,8 +36,10 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       this->publish_state_(this->voltage_sensor_, NAN);
       this->publish_state_(this->current_sensor_, NAN);
       this->publish_state_(this->power_sensor_, NAN);
+      this->publish_state_(this->capacity_sensor_, NAN);
       this->publish_state_(this->energy_sensor_, NAN);
       this->publish_state_(this->temperature_sensor_, NAN);
+      this->publish_state_(this->backlight_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
