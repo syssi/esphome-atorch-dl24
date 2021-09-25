@@ -33,6 +33,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
 
  protected:
   void decode(const uint8_t *data, uint16_t length);
+  void publish_state_(sensor::Sensor *sensor, float value);
 
   uint16_t char_handle_;
   sensor::Sensor *voltage_{nullptr};

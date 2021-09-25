@@ -111,40 +111,39 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
   // 0x02:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
   // 0x00 0x00 0x20:       Voltage                32 * 0.1 = 3.2 V
-  ESP_LOGD(TAG, "  Voltage: %f", dl24_get_24bit(4) * 0.1f);
+  this->publish_state_(this->voltage_sensor_, dl24_get_24bit(4) * 0.1f);
 
   // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
-  ESP_LOGD(TAG, "  Current: %f", dl24_get_24bit(7) * 0.001f);
+  this->publish_state_(this->current_sensor_, dl24_get_24bit(7) * 0.001f);
 
   // 0x00 0x13 0xFD:       Power                  5117 * 0.1 = 511.7 W
-  ESP_LOGD(TAG, "  Power: %f", dl24_get_24bit(10) * 0.1f);
+  this->publish_state_(this->power_sensor_, dl24_get_24bit(10) * 0.1f);
 
   // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
-  ESP_LOGD(TAG, "  Energy: %f", dl24_get_32bit(13) * 10.0f);
+  this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);
 
   // 0x00 0x00 0x00:       Price per kWh
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x00 0x25:            Temperature            25 °C
-  ESP_LOGD(TAG, "  Temperature: %f", (float) dl24_get_16bit(24));
+  this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
   // 0x00 0x02:            Hour                   2 h
-  ESP_LOGD(TAG, "  Hour: %f", (float) dl24_get_16bit(26));
-
   // 0x21:                 Minute                      33 min
-  ESP_LOGD(TAG, "  Minute: %f", (float) data[28]);
-
   // 0x1F:                 Second                      31 sec
-  ESP_LOGD(TAG, "  Second: %f", (float) data[29]);
+  ESP_LOGD(TAG, "  Timer: %d:%d:%d", dl24_get_16bit(26), data[28], data[29]);
 
   // 0x3C:                 Backlight                   63 %
   ESP_LOGD(TAG, "  Backlight: %f\n", (float) data[30]);
 
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x1C:                 Checksum
+}
 
-  //      if (this->battery_ != nullptr) {
-  //        this->battery_->publish_state(1.0);
-  //      }
+void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
+  if (sensor == nullptr)
+    return;
+
+  sensor->publish_state(value);
 }
 
 void AtorchDL24::update() {}
