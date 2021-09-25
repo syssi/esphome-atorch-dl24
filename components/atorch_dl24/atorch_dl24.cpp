@@ -22,6 +22,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Energy", this->energy_sensor_);
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
   LOG_SENSOR(" ", "Backlight", this->backlight_sensor_);
+  LOG_SENSOR(" ", "Running", this->running_sensor_);
 }
 
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -40,6 +41,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       this->publish_state_(this->energy_sensor_, NAN);
       this->publish_state_(this->temperature_sensor_, NAN);
       this->publish_state_(this->backlight_sensor_, NAN);
+      this->publish_state_(this->running_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -141,9 +143,12 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
   // 0x00 0x02:            Hour                   2 h
-  // 0x21:                 Minute                      33 min
-  // 0x1F:                 Second                      31 sec
-  ESP_LOGD(TAG, "  Timer: %d:%d:%d", dl24_get_16bit(26), data[28], data[29]);
+  // 0x21:                 Minute                 33 min
+  // 0x1F:                 Second                 31 sec
+  ESP_LOGD(TAG, "  Timer: %02d:%02d:%02d", dl24_get_16bit(26), data[28], data[29]);
+  if (previous_value != 61)
+    this->publish_state_(this->running_sensor_, (float) (previous_value != data[29]));
+  previous_value = data[29];
 
   // 0x3C:                 Backlight                   63 %
   this->publish_state_(this->backlight_sensor_, (float) data[30]);
