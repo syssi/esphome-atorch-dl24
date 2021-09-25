@@ -32,5 +32,17 @@ ble_client:
 sensor:
   - platform: atorch_dl24
     ble_client_id: dummyload0
-    battery_level:
-      name: "test"
+    voltage:
+      name: "${name} voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    capacity:
+      name: "${name} capacity"
+    energy:
+      name: "${name} energy"
+    temperature:
+      name: "${name} temperature"
+    backlight:
+      name: "${name} backlight"

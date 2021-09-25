@@ -15,10 +15,16 @@ static const uint16_t DL24_CHARACTERISTIC_UUID = 0xFFE1;
 
 void AtorchDL24::dump_config() {
   ESP_LOGCONFIG(TAG, "DL24");
-  LOG_SENSOR(" ", "Battery", this->battery_);
+  LOG_SENSOR(" ", "Voltage", this->voltage_sensor_);
+  LOG_SENSOR(" ", "Current", this->current_sensor_);
+  LOG_SENSOR(" ", "Power", this->power_sensor_);
+  LOG_SENSOR(" ", "Capacity", this->capacity_sensor_);
+  LOG_SENSOR(" ", "Energy", this->energy_sensor_);
+  LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
+  LOG_SENSOR(" ", "Backlight", this->backlight_sensor_);
 }
 
-void AtorchDL24::setup() { this->current_sensor_ = 0; }
+void AtorchDL24::setup() {}
 
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                      esp_ble_gattc_cb_param_t *param) {
@@ -28,8 +34,12 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
     }
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::Idle;
-      if (this->battery_ != nullptr)
-        this->battery_->publish_state(NAN);
+
+      this->publish_state_(this->voltage_sensor_, NAN);
+      this->publish_state_(this->current_sensor_, NAN);
+      this->publish_state_(this->power_sensor_, NAN);
+      this->publish_state_(this->energy_sensor_, NAN);
+      this->publish_state_(this->temperature_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -77,7 +87,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   };
 
   if (length != 36) {
-    ESP_LOGW(TAG, "Frame skipped because of invalid length");
+    ESP_LOGW(TAG, "Frame skipped because of invalid length. USB meter report frames aren't supported right now.");
     return;
   }
 
@@ -96,8 +106,6 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
     return;
   }
 
-  ESP_LOGD(TAG, "New measurement:");
-
   // Example responses
   //
   // FF.55.01.02.00.00.20.00.4E.20.00.13.FA.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1A.3C.00.00.00.00.09
@@ -111,40 +119,44 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
   // 0x02:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
   // 0x00 0x00 0x20:       Voltage                32 * 0.1 = 3.2 V
-  ESP_LOGD(TAG, "  Voltage: %f", dl24_get_24bit(4) * 0.1f);
+  float voltage = dl24_get_24bit(4) * 0.1f;
+  this->publish_state_(this->voltage_sensor_, voltage);
 
   // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
-  ESP_LOGD(TAG, "  Current: %f", dl24_get_24bit(7) * 0.001f);
+  float current = dl24_get_24bit(7) * 0.001f;
+  this->publish_state_(this->current_sensor_, dl24_get_24bit(7) * 0.001f);
+  this->publish_state_(this->power_sensor_, voltage * current);
 
-  // 0x00 0x13 0xFD:       Power                  5117 * 0.1 = 511.7 W
-  ESP_LOGD(TAG, "  Power: %f", dl24_get_24bit(10) * 0.1f);
+  // 0x00 0x13 0xFD:       Capacity in Ah        5117 * 0.01 = 51.17 Ah
+  this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.01f);
 
   // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
-  ESP_LOGD(TAG, "  Energy: %f", dl24_get_32bit(13) * 10.0f);
+  this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);
 
-  // 0x00 0x00 0x00:       Price per kWh
-  // 0x00 0x00 0x00 0x00:  Unknown
+  // 0x00 0x00 0x00:       Price per kWh          value * 0.01
+  // 0x00 0x00:            Frequency              value * 0.1 Hz
+  // 0x00 0x00:            Power factor           value * 0.001 kW?
+
   // 0x00 0x25:            Temperature            25 °C
-  ESP_LOGD(TAG, "  Temperature: %f", (float) dl24_get_16bit(24));
+  this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
   // 0x00 0x02:            Hour                   2 h
-  ESP_LOGD(TAG, "  Hour: %f", (float) dl24_get_16bit(26));
-
   // 0x21:                 Minute                      33 min
-  ESP_LOGD(TAG, "  Minute: %f", (float) data[28]);
-
   // 0x1F:                 Second                      31 sec
-  ESP_LOGD(TAG, "  Second: %f", (float) data[29]);
+  ESP_LOGD(TAG, "  Timer: %d:%d:%d", dl24_get_16bit(26), data[28], data[29]);
 
   // 0x3C:                 Backlight                   63 %
-  ESP_LOGD(TAG, "  Backlight: %f\n", (float) data[30]);
+  this->publish_state_(this->backlight_sensor_, (float) data[30]);
 
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x1C:                 Checksum
+}
 
-  //      if (this->battery_ != nullptr) {
-  //        this->battery_->publish_state(1.0);
-  //      }
+void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
+  if (sensor == nullptr)
+    return;
+
+  sensor->publish_state(value);
 }
 
 void AtorchDL24::update() {}
