@@ -18,7 +18,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Battery", this->battery_);
 }
 
-void AtorchDL24::setup() { this->current_sensor_ = 0; }
+void AtorchDL24::setup() {}
 
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                      esp_ble_gattc_cb_param_t *param) {

@@ -24,8 +24,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
                            esp_ble_gattc_cb_param_t *param) override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
-  void set_voltage(sensor::Sensor *voltage) { voltage_ = voltage; }
 
+  void set_voltage(sensor::Sensor *voltage) { voltage_ = voltage; }
   void set_current(sensor::Sensor *current) { current_ = current; }
   void set_power(sensor::Sensor *power) { power_ = power; }
   void set_energy(sensor::Sensor *energy) { energy_ = energy; }
@@ -40,8 +40,6 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
   sensor::Sensor *power_{nullptr};
   sensor::Sensor *energy_{nullptr};
   sensor::Sensor *temperature_{nullptr};
-
-  uint8_t current_sensor_;
 };
 
 }  // namespace atorch_dl24
