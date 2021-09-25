@@ -1,0 +1,9 @@
+type: entities
+entities:
+  - entity: sensor.atorch_dl24_voltage
+  - entity: sensor.atorch_dl24_current
+  - entity: sensor.atorch_dl24_power
+  - entity: sensor.atorch_dl24_capacity
+  - entity: sensor.atorch_dl24_energy
+  - entity: sensor.atorch_dl24_temperature
+  - entity: sensor.atorch_dl24_backlight

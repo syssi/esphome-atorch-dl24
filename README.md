@@ -8,6 +8,9 @@
 
 ESPHome component to monitor a Atorch DL24 dummy load via bluetooth
 
+![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
+
+
 ## Supported devices
 
 * Atorch DL24
