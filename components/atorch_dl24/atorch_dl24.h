@@ -25,22 +25,22 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
-  void set_voltage(sensor::Sensor *voltage) { voltage_ = voltage; }
-  void set_current(sensor::Sensor *current) { current_ = current; }
-  void set_power(sensor::Sensor *power) { power_ = power; }
-  void set_energy(sensor::Sensor *energy) { energy_ = energy; }
-  void set_temperature(sensor::Sensor *temperature) { temperature_ = temperature; }
+  void set_voltage(sensor::Sensor *voltage_sensor) { voltage_sensor_ = voltage_sensor; }
+  void set_current(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
+  void set_power(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
+  void set_energy(sensor::Sensor *energy_sensor) { energy_sensor_ = energy_sensor; }
+  void set_temperature(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
 
  protected:
   void decode(const uint8_t *data, uint16_t length);
   void publish_state_(sensor::Sensor *sensor, float value);
 
   uint16_t char_handle_;
-  sensor::Sensor *voltage_{nullptr};
-  sensor::Sensor *current_{nullptr};
-  sensor::Sensor *power_{nullptr};
-  sensor::Sensor *energy_{nullptr};
-  sensor::Sensor *temperature_{nullptr};
+  sensor::Sensor *voltage_sensor_{nullptr};
+  sensor::Sensor *current_sensor_{nullptr};
+  sensor::Sensor *power_sensor_{nullptr};
+  sensor::Sensor *energy_sensor_{nullptr};
+  sensor::Sensor *temperature_sensor_{nullptr};
 };
 
 }  // namespace atorch_dl24
