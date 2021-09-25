@@ -2,6 +2,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import ble_client, sensor
 from esphome.const import (
+    CONF_CAPACITY,
     CONF_CURRENT,
     CONF_ENERGY,
     CONF_ID,
@@ -25,10 +26,13 @@ from esphome.const import (
 
 CODEOWNERS = ["@syssi"]
 
+UNIT_AMPERE_HOURS = "Ah"
+
 SENSORS = [
     CONF_VOLTAGE,
     CONF_CURRENT,
     CONF_POWER,
+    CONF_CAPACITY,
     CONF_ENERGY,
     CONF_TEMPERATURE,
 ]
@@ -54,6 +58,13 @@ CONFIG_SCHEMA = (
             ),
             cv.Optional(CONF_POWER): sensor.sensor_schema(
                 UNIT_WATT, ICON_EMPTY, 4, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
+            ),
+            cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
+                UNIT_AMPERE_HOURS,
+                ICON_EMPTY,
+                4,
+                DEVICE_CLASS_ENERGY,
+                STATE_CLASS_MEASUREMENT,
             ),
             cv.Optional(CONF_ENERGY): sensor.sensor_schema(
                 UNIT_WATT_HOURS,

@@ -18,6 +18,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Voltage", this->voltage_sensor_);
   LOG_SENSOR(" ", "Current", this->current_sensor_);
   LOG_SENSOR(" ", "Power", this->power_sensor_);
+  LOG_SENSOR(" ", "Capacity", this->capacity_sensor_);
   LOG_SENSOR(" ", "Energy", this->energy_sensor_);
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
 }
@@ -119,13 +120,16 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
   // 0x02:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
   // 0x00 0x00 0x20:       Voltage                32 * 0.1 = 3.2 V
-  this->publish_state_(this->voltage_sensor_, dl24_get_24bit(4) * 0.1f);
+  float voltage = dl24_get_24bit(4) * 0.1f;
+  this->publish_state_(this->voltage_sensor_, voltage);
 
   // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
+  float current =  dl24_get_24bit(7) * 0.001f)
   this->publish_state_(this->current_sensor_, dl24_get_24bit(7) * 0.001f);
+  this->publish_state_(this->power_sensor_, voltage * current);
 
-  // 0x00 0x13 0xFD:       Power                  5117 * 0.1 = 511.7 W
-  this->publish_state_(this->power_sensor_, dl24_get_24bit(10) * 0.1f);
+  // 0x00 0x13 0xFD:       Capacity in Ah        5117 * 0.01 = 51.17 Ah
+  this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.01f);
 
   // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);

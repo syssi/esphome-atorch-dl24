@@ -38,6 +38,8 @@ sensor:
       name: "${name} current"
     power:
       name: "${name} power"
+    capacity:
+      name: "${name} capacity"
     energy:
       name: "${name} energy"
     temperature:
