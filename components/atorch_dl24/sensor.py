@@ -10,15 +10,18 @@ from esphome.const import (
     CONF_TEMPERATURE,
     CONF_VOLTAGE,
     DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_EMPTY,
     DEVICE_CLASS_ENERGY,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
     ICON_COUNTER,
     ICON_EMPTY,
+    ICON_PERCENT,
     STATE_CLASS_MEASUREMENT,
     UNIT_AMPERE,
     UNIT_CELSIUS,
+    UNIT_PERCENT,
     UNIT_VOLT,
     UNIT_WATT,
     UNIT_WATT_HOURS,
@@ -26,6 +29,7 @@ from esphome.const import (
 
 CODEOWNERS = ["@syssi"]
 
+CONF_BACKLIGHT = "backlight"
 UNIT_AMPERE_HOURS = "Ah"
 
 SENSORS = [
@@ -35,6 +39,7 @@ SENSORS = [
     CONF_CAPACITY,
     CONF_ENERGY,
     CONF_TEMPERATURE,
+    CONF_BACKLIGHT,
 ]
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
@@ -78,6 +83,13 @@ CONFIG_SCHEMA = (
                 ICON_EMPTY,
                 0,
                 DEVICE_CLASS_TEMPERATURE,
+                STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_BACKLIGHT): sensor.sensor_schema(
+                UNIT_PERCENT,
+                ICON_PERCENT,
+                0,
+                DEVICE_CLASS_EMPTY,
                 STATE_CLASS_MEASUREMENT,
             ),
         }

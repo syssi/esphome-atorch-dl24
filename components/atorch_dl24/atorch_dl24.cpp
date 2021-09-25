@@ -21,6 +21,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Capacity", this->capacity_sensor_);
   LOG_SENSOR(" ", "Energy", this->energy_sensor_);
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
+  LOG_SENSOR(" ", "Backlight", this->backlight_sensor_);
 }
 
 void AtorchDL24::setup() {}
@@ -145,7 +146,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   ESP_LOGD(TAG, "  Timer: %d:%d:%d", dl24_get_16bit(26), data[28], data[29]);
 
   // 0x3C:                 Backlight                   63 %
-  ESP_LOGD(TAG, "  Backlight: %f\n", (float) data[30]);
+  this->publish_state_(this->backlight_sensor_, (float) data[30]);
 
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x1C:                 Checksum

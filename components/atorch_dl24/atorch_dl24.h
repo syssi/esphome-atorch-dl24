@@ -31,6 +31,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
   void set_capacity_sensor(sensor::Sensor *capacity_sensor) { capacity_sensor_ = capacity_sensor; }
   void set_energy_sensor(sensor::Sensor *energy_sensor) { energy_sensor_ = energy_sensor; }
   void set_temperature_sensor(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
+  void set_backlight_sensor(sensor::Sensor *backlight_sensor) { backlight_sensor_ = backlight_sensor; }
 
  protected:
   void decode(const uint8_t *data, uint16_t length);
@@ -43,6 +44,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
   sensor::Sensor *capacity_sensor_{nullptr};
   sensor::Sensor *energy_sensor_{nullptr};
   sensor::Sensor *temperature_sensor_{nullptr};
+  sensor::Sensor *backlight_sensor_{nullptr};
 };
 
 }  // namespace atorch_dl24
