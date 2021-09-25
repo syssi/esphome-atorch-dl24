@@ -34,3 +34,10 @@ ESPHome component to monitor a Atorch DL24 dummy load via bluetooth
 
 
 This esphome component is work in progress!
+
+
+
+## References
+
+* https://github.com/syssi/esphome-atorch-dl24/blob/main/docs/protocol-design.md
+* https://github.com/NiceLabs/atorch-console
