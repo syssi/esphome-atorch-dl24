@@ -87,7 +87,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   };
 
   if (length != 36) {
-    ESP_LOGW(TAG, "Frame skipped because of invalid length");
+    ESP_LOGW(TAG, "Frame skipped because of invalid length. USB meter report frames aren't supported right now.");
     return;
   }
 
@@ -133,8 +133,10 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);
 
-  // 0x00 0x00 0x00:       Price per kWh
-  // 0x00 0x00 0x00 0x00:  Unknown
+  // 0x00 0x00 0x00:       Price per kWh          value * 0.01
+  // 0x00 0x00:            Frequency              value * 0.1 Hz
+  // 0x00 0x00:            Power factor           value * 0.001 kW?
+
   // 0x00 0x25:            Temperature            25 °C
   this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
