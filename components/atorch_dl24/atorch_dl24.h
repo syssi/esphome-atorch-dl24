@@ -25,11 +25,11 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public PollingComp
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
-  void set_voltage(sensor::Sensor *voltage_sensor) { voltage_sensor_ = voltage_sensor; }
-  void set_current(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
-  void set_power(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
-  void set_energy(sensor::Sensor *energy_sensor) { energy_sensor_ = energy_sensor; }
-  void set_temperature(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
+  void set_voltage_sensor(sensor::Sensor *voltage_sensor) { voltage_sensor_ = voltage_sensor; }
+  void set_current_sensor(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
+  void set_power_sensor(sensor::Sensor *power_sensor) { power_sensor_ = power_sensor; }
+  void set_energy_sensor(sensor::Sensor *energy_sensor) { energy_sensor_ = energy_sensor; }
+  void set_temperature_sensor(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
 
  protected:
   void decode(const uint8_t *data, uint16_t length);
