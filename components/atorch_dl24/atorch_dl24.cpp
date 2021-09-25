@@ -18,7 +18,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Voltage", this->voltage_sensor_);
   LOG_SENSOR(" ", "Current", this->current_sensor_);
   LOG_SENSOR(" ", "Power", this->power_sensor_);
-  LOG_SENSOR(" ", "Energy", this->enery_sensor_);
+  LOG_SENSOR(" ", "Energy", this->energy_sensor_);
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
 }
 
