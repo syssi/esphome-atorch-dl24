@@ -15,7 +15,11 @@ static const uint16_t DL24_CHARACTERISTIC_UUID = 0xFFE1;
 
 void AtorchDL24::dump_config() {
   ESP_LOGCONFIG(TAG, "DL24");
-  LOG_SENSOR(" ", "Battery", this->battery_);
+  LOG_SENSOR(" ", "Voltage", this->voltage_sensor_);
+  LOG_SENSOR(" ", "Current", this->current_sensor_);
+  LOG_SENSOR(" ", "Power", this->power_sensor_);
+  LOG_SENSOR(" ", "Energy", this->enery_sensor_);
+  LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
 }
 
 void AtorchDL24::setup() {}
@@ -28,8 +32,12 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
     }
     case ESP_GATTC_DISCONNECT_EVT: {
       this->node_state = espbt::ClientState::Idle;
-      if (this->battery_ != nullptr)
-        this->battery_->publish_state(NAN);
+
+      this->publish_state_(this->voltage_sensor_, NAN);
+      this->publish_state_(this->current_sensor_, NAN);
+      this->publish_state_(this->power_sensor_, NAN);
+      this->publish_state_(this->energy_sensor_, NAN);
+      this->publish_state_(this->temperature_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
