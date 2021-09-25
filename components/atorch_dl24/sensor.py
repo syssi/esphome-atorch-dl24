@@ -31,6 +31,7 @@ CODEOWNERS = ["@syssi"]
 
 CONF_BACKLIGHT = "backlight"
 UNIT_AMPERE_HOURS = "Ah"
+ICON_CAPACITY = "mdi:battery-medium"
 
 SENSORS = [
     CONF_VOLTAGE,
@@ -43,59 +44,54 @@ SENSORS = [
 ]
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
-AtorchDL24 = atorch_dl24_ns.class_(
-    "AtorchDL24", ble_client.BLEClientNode, cg.Component
-)
+AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Component)
 
-CONFIG_SCHEMA = (
-    cv.Schema(
-        {
-            cv.GenerateID(): cv.declare_id(AtorchDL24),
-            cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
-                UNIT_VOLT, ICON_EMPTY, 1, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
-            ),
-            cv.Optional(CONF_CURRENT): sensor.sensor_schema(
-                UNIT_AMPERE,
-                ICON_EMPTY,
-                3,
-                DEVICE_CLASS_CURRENT,
-                STATE_CLASS_MEASUREMENT,
-            ),
-            cv.Optional(CONF_POWER): sensor.sensor_schema(
-                UNIT_WATT, ICON_EMPTY, 4, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
-            ),
-            cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
-                UNIT_AMPERE_HOURS,
-                ICON_EMPTY,
-                4,
-                DEVICE_CLASS_ENERGY,
-                STATE_CLASS_MEASUREMENT,
-            ),
-            cv.Optional(CONF_ENERGY): sensor.sensor_schema(
-                UNIT_WATT_HOURS,
-                ICON_COUNTER,
-                0,
-                DEVICE_CLASS_ENERGY,
-                STATE_CLASS_MEASUREMENT,
-            ),
-            cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
-                UNIT_CELSIUS,
-                ICON_EMPTY,
-                0,
-                DEVICE_CLASS_TEMPERATURE,
-                STATE_CLASS_MEASUREMENT,
-            ),
-            cv.Optional(CONF_BACKLIGHT): sensor.sensor_schema(
-                UNIT_PERCENT,
-                ICON_PERCENT,
-                0,
-                DEVICE_CLASS_EMPTY,
-                STATE_CLASS_MEASUREMENT,
-            ),
-        }
-    )
-    .extend(ble_client.BLE_CLIENT_SCHEMA)
-)
+CONFIG_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(): cv.declare_id(AtorchDL24),
+        cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
+            UNIT_VOLT, ICON_EMPTY, 1, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CURRENT): sensor.sensor_schema(
+            UNIT_AMPERE,
+            ICON_EMPTY,
+            3,
+            DEVICE_CLASS_CURRENT,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_POWER): sensor.sensor_schema(
+            UNIT_WATT, ICON_EMPTY, 4, DEVICE_CLASS_POWER, STATE_CLASS_MEASUREMENT
+        ),
+        cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
+            UNIT_AMPERE_HOURS,
+            ICON_CAPACITY,
+            4,
+            DEVICE_CLASS_ENERGY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_ENERGY): sensor.sensor_schema(
+            UNIT_WATT_HOURS,
+            ICON_COUNTER,
+            0,
+            DEVICE_CLASS_ENERGY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
+            UNIT_CELSIUS,
+            ICON_EMPTY,
+            0,
+            DEVICE_CLASS_TEMPERATURE,
+            STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_BACKLIGHT): sensor.sensor_schema(
+            UNIT_PERCENT,
+            ICON_PERCENT,
+            0,
+            DEVICE_CLASS_EMPTY,
+            STATE_CLASS_MEASUREMENT,
+        ),
+    }
+).extend(ble_client.BLE_CLIENT_SCHEMA)
 
 
 def to_code(config):
