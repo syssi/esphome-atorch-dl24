@@ -1,24 +1,26 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import sensor, ble_client
+from esphome.components import ble_client, sensor
 from esphome.const import (
-    CONF_ID,
-    CONF_VOLTAGE,
     CONF_CURRENT,
-    CONF_POWER,
     CONF_ENERGY,
+    CONF_ID,
+    CONF_POWER,
     CONF_TEMPERATURE,
-    DEVICE_CLASS_POWER,
+    CONF_VOLTAGE,
+    DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_ENERGY,
-    STATE_CLASS_MEASUREMENT,
+    DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_VOLTAGE,
     ICON_COUNTER,
     ICON_EMPTY,
+    STATE_CLASS_MEASUREMENT,
     UNIT_AMPERE,
+    UNIT_CELSIUS,
     UNIT_VOLT,
     UNIT_WATT,
     UNIT_WATT_HOURS,
-    UNIT_CELSIUS,
 )
 
 CODEOWNERS = ["@syssi"]
@@ -83,4 +85,4 @@ def to_code(config):
         if key in config:
             conf = config[key]
             sens = yield sensor.new_sensor(conf)
-            cg.add(getattr(hub, f"set_{key}_sensor")(sens))
+            cg.add(getattr(var, f"set_{key}_sensor")(sens))
