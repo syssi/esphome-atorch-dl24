@@ -18,7 +18,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 
   // skip header
   for (uint16_t i = 2; i < len; i++) {
-    crc = (crc + data[i]) & 0xff;
+    crc = crc + data[i];
   }
   return crc ^ 0x44;
 }
