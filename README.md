@@ -88,7 +88,7 @@ esphome run esp32-example.yaml
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
 [D][atorch_dl24:146]:   Timer: 3:5:57
-[D][sensor:118]: 'atorch-dl24 backlight': Sending state 60.00000 % with 0 decimals of accuracy
+[D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 voltage': Sending state 3.30000 V with 1 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 current': Sending state 20.00400 A with 3 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 power': Sending state 66.01321 W with 4 decimals of accuracy
@@ -96,7 +96,7 @@ esphome run esp32-example.yaml
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
 [D][atorch_dl24:146]:   Timer: 3:5:58
-[D][sensor:118]: 'atorch-dl24 backlight': Sending state 60.00000 % with 0 decimals of accuracy
+[D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 voltage': Sending state 3.30000 V with 1 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 current': Sending state 19.99600 A with 3 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 power': Sending state 65.98680 W with 4 decimals of accuracy
@@ -104,7 +104,7 @@ esphome run esp32-example.yaml
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
 [D][atorch_dl24:146]:   Timer: 3:5:59
-[D][sensor:118]: 'atorch-dl24 backlight': Sending state 60.00000 % with 0 decimals of accuracy
+[D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 ```
 
 ## References

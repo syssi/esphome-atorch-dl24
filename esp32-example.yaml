@@ -44,7 +44,7 @@ sensor:
       name: "${name} energy"
     temperature:
       name: "${name} temperature"
-    backlight:
-      name: "${name} backlight"
+    dim_backlight:
+      name: "${name} dim backlight"
     running:
       name: "${name} running"

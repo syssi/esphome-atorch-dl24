@@ -17,12 +17,12 @@ from esphome.const import (
     DEVICE_CLASS_VOLTAGE,
     ICON_COUNTER,
     ICON_EMPTY,
-    ICON_PERCENT,
+    ICON_TIMER,
     STATE_CLASS_MEASUREMENT,
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
-    UNIT_PERCENT,
+    UNIT_SECOND,
     UNIT_VOLT,
     UNIT_WATT,
     UNIT_WATT_HOURS,
@@ -30,7 +30,7 @@ from esphome.const import (
 
 CODEOWNERS = ["@syssi"]
 
-CONF_BACKLIGHT = "backlight"
+CONF_DIM_BACKLIGHT = "dim_backlight"
 CONF_RUNNING = "running"
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
@@ -43,7 +43,7 @@ SENSORS = [
     CONF_CAPACITY,
     CONF_ENERGY,
     CONF_TEMPERATURE,
-    CONF_BACKLIGHT,
+    CONF_DIM_BACKLIGHT,
     CONF_RUNNING,
 ]
 
@@ -87,9 +87,9 @@ CONFIG_SCHEMA = cv.Schema(
             DEVICE_CLASS_TEMPERATURE,
             STATE_CLASS_MEASUREMENT,
         ),
-        cv.Optional(CONF_BACKLIGHT): sensor.sensor_schema(
-            UNIT_PERCENT,
-            ICON_PERCENT,
+        cv.Optional(CONF_DIM_BACKLIGHT): sensor.sensor_schema(
+            UNIT_SECOND,
+            ICON_TIMER,
             0,
             DEVICE_CLASS_EMPTY,
             STATE_CLASS_MEASUREMENT,

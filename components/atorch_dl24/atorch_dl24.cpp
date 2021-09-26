@@ -21,7 +21,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Capacity", this->capacity_sensor_);
   LOG_SENSOR(" ", "Energy", this->energy_sensor_);
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
-  LOG_SENSOR(" ", "Backlight", this->backlight_sensor_);
+  LOG_SENSOR(" ", "Dim Backlight", this->dim_backlight_sensor_);
   LOG_SENSOR(" ", "Running", this->running_sensor_);
 }
 
@@ -40,7 +40,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       this->publish_state_(this->capacity_sensor_, NAN);
       this->publish_state_(this->energy_sensor_, NAN);
       this->publish_state_(this->temperature_sensor_, NAN);
-      this->publish_state_(this->backlight_sensor_, NAN);
+      this->publish_state_(this->dim_backlight_sensor_, NAN);
       this->publish_state_(this->running_sensor_, NAN);
       break;
     }
@@ -150,8 +150,8 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
     this->publish_state_(this->running_sensor_, (float) (previous_value != data[29]));
   previous_value = data[29];
 
-  // 0x3C:                 Backlight                   63 %
-  this->publish_state_(this->backlight_sensor_, (float) data[30]);
+  // 0x3C:                 Dim backlight          60 seconds
+  this->publish_state_(this->dim_backlight_sensor_, (float) data[30]);
 
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x1C:                 Checksum

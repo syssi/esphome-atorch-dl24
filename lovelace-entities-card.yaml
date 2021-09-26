@@ -6,4 +6,4 @@ entities:
   - entity: sensor.atorch_dl24_capacity
   - entity: sensor.atorch_dl24_energy
   - entity: sensor.atorch_dl24_temperature
-  - entity: sensor.atorch_dl24_backlight
+  - entity: sensor.atorch_dl24_dim_backlight
