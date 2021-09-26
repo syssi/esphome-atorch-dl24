@@ -13,6 +13,16 @@ static const char *TAG = "atorch_dl24";
 static const uint16_t DL24_SERVICE_UUID = 0xFFE0;
 static const uint16_t DL24_CHARACTERISTIC_UUID = 0xFFE1;
 
+uint8_t crc(const uint8_t data[], const uint16_t len) {
+  uint8_t crc = 0;
+
+  // skip header
+  for (uint16_t i = 2; i < len; i++) {
+    crc = (crc + data[i]) & 0xff;
+  }
+  return crc ^ 0x44;
+}
+
 void AtorchDL24::dump_config() {
   ESP_LOGCONFIG(TAG, "DL24");
   LOG_SENSOR(" ", "Voltage", this->voltage_sensor_);
@@ -87,6 +97,11 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   auto dl24_get_32bit = [&](size_t i) -> uint32_t {
     return (uint32_t(dl24_get_16bit(i + 0)) << 16) | (uint32_t(dl24_get_16bit(i + 2)) << 0);
   };
+
+  if (crc(data, length - 1) != data[35]) {
+    ESP_LOGW(TAG, "CRC check failed. Skipping frame.");
+    return;
+  }
 
   if (length != 36) {
     ESP_LOGW(TAG, "Frame skipped because of invalid length. USB meter report frames aren't supported right now.");
