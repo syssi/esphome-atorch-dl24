@@ -33,7 +33,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_running_sensor(sensor::Sensor *running_sensor) { running_sensor_ = running_sensor; }
 
  protected:
-  void decode(const uint8_t *data, uint16_t length);
+  void decode_(const uint8_t *data, uint16_t length);
   void publish_state_(sensor::Sensor *sensor, float value);
 
   uint16_t char_handle_;
@@ -45,7 +45,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *temperature_sensor_{nullptr};
   sensor::Sensor *dim_backlight_sensor_{nullptr};
   sensor::Sensor *running_sensor_{nullptr};
-  uint8_t previous_value = 61;
+  uint8_t previous_value_ = 61;
 };
 
 }  // namespace atorch_dl24

@@ -78,7 +78,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s", hexencode(param->notify.value, param->notify.value_len + 0).c_str());
-      this->decode(param->notify.value, param->notify.value_len);
+      this->decode_(param->notify.value, param->notify.value_len);
 
       break;
     }
@@ -87,7 +87,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
   }
 }
 
-void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
   auto dl24_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };
@@ -161,9 +161,9 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   // 0x21:                 Minute                 33 min
   // 0x1F:                 Second                 31 sec
   ESP_LOGD(TAG, "  Timer: %02d:%02d:%02d", dl24_get_16bit(26), data[28], data[29]);
-  if (previous_value != 61)
-    this->publish_state_(this->running_sensor_, (float) (previous_value != data[29]));
-  previous_value = data[29];
+  if (previous_value_ != 61)
+    this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[29]));
+  previous_value_ = data[29];
 
   // 0x3C:                 Dim backlight          60 seconds
   this->publish_state_(this->dim_backlight_sensor_, (float) data[30]);
