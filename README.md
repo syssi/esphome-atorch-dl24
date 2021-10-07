@@ -36,7 +36,7 @@ ESPHome component to monitor a Atorch DL24 dummy load via bluetooth
 
 ## Requirements
 
-* [ESPHome 1.18.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2021.10.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 (f.e. ESP32 NodeMCU or D1 Mini ESP32)
 
 ## Installation
