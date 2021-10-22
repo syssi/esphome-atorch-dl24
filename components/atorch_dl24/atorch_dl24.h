@@ -5,9 +5,7 @@
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/sensor/sensor.h"
 
-// @FIXME: This define should be used as soon as esphome 2021.10 is released
-// #ifdef USE_ESP32
-#ifdef ARDUINO_ARCH_ESP32  // NOLINT
+#ifdef USE_ESP32
 
 #include <esp_gattc_api.h>
 

@@ -1,9 +1,7 @@
 #include "atorch_dl24.h"
 #include "esphome/core/log.h"
 
-// @FIXME: This define should be used as soon as esphome 2021.10 is released
-// #ifdef USE_ESP32
-#ifdef ARDUINO_ARCH_ESP32  // NOLINT
+#ifdef USE_ESP32
 
 namespace esphome {
 namespace atorch_dl24 {
