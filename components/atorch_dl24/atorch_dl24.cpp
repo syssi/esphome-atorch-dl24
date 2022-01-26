@@ -53,7 +53,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
-      auto chr = this->parent_->get_characteristic(DL24_SERVICE_UUID, DL24_CHARACTERISTIC_UUID);
+      auto *chr = this->parent_->get_characteristic(DL24_SERVICE_UUID, DL24_CHARACTERISTIC_UUID);
       if (chr == nullptr) {
         ESP_LOGE(TAG, "[%s] No control service found at device, not an DL24..?", this->parent_->address_str().c_str());
         break;
