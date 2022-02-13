@@ -96,7 +96,7 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
     return (uint32_t(dl24_get_16bit(i + 0)) << 16) | (uint32_t(dl24_get_16bit(i + 2)) << 0);
   };
 
-  if (crc(data, length - 1) != data[35]) {
+  if (this->check_crc_ && crc(data, length - 1) != data[35]) {
     ESP_LOGW(TAG, "CRC check failed. Skipping frame.");
     return;
   }
