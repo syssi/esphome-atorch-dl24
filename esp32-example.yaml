@@ -32,6 +32,7 @@ ble_client:
 sensor:
   - platform: atorch_dl24
     ble_client_id: dummyload0
+    check_crc: true
     voltage:
       name: "${name} voltage"
     current:

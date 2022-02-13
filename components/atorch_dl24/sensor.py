@@ -30,8 +30,10 @@ from esphome.const import (
 
 CODEOWNERS = ["@syssi"]
 
+CONF_CHECK_CRC = "check_crc"
 CONF_DIM_BACKLIGHT = "dim_backlight"
 CONF_RUNNING = "running"
+
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
 ICON_RUNNING = "mdi:power"
@@ -53,6 +55,7 @@ AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Co
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AtorchDL24),
+        cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
         cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
             UNIT_VOLT, ICON_EMPTY, 1, DEVICE_CLASS_VOLTAGE, STATE_CLASS_MEASUREMENT
         ),
@@ -109,6 +112,8 @@ def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     yield cg.register_component(var, config)
     yield ble_client.register_ble_node(var, config)
+
+    cg.add(var.set_check_crc(config[CONF_CHECK_CRC]))
 
     for key in SENSORS:
         if key in config:
