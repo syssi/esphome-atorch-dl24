@@ -52,6 +52,7 @@ SENSORS = [
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
 AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Component)
 
+# pylint: disable=too-many-function-args
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AtorchDL24),
