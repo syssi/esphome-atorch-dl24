@@ -162,6 +162,7 @@ jobs:
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
       - run: |
           sed -i 's#source: github://syssi/esphome-atorch-dl24@main#source: components#' esp32-example.yaml
+          esphome config esp32.yaml
           esphome config esp32-example.yaml
 
   esphome-compile:
@@ -202,3 +203,5 @@ jobs:
       - run: |
           sed -i 's#source: github://syssi/esphome-atorch-dl24@main#source: components#' esp32-example.yaml
           esphome compile esp32-example.yaml
+      - run: |
+          esphome compile esp32-example-debug.yaml
