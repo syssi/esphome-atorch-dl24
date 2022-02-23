@@ -1,5 +1,6 @@
 substitutions:
   name: atorch-dl24
+  dl24_mac_address: 41:B8:12:0A:A8:37
 
 esphome:
   name: ${name}
@@ -26,7 +27,7 @@ mqtt:
 esp32_ble_tracker:
 
 ble_client:
-  - mac_address: 41:B8:12:0A:A8:37
+  - mac_address: ${dl24_mac_address}
     id: dummyload0
 
 sensor:

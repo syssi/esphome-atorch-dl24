@@ -163,6 +163,8 @@ jobs:
       - run: |
           sed -i 's#source: github://syssi/esphome-atorch-dl24@main#source: components#' esp32-example.yaml
           esphome config esp32-example.yaml
+      - run: |
+          esphome config esp32-example-debug.yaml
 
   esphome-compile:
     runs-on: ubuntu-latest
@@ -202,3 +204,5 @@ jobs:
       - run: |
           sed -i 's#source: github://syssi/esphome-atorch-dl24@main#source: components#' esp32-example.yaml
           esphome compile esp32-example.yaml
+      - run: |
+          esphome compile esp32-example-debug.yaml
