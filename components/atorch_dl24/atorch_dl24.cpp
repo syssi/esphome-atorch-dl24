@@ -76,6 +76,26 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s", hexencode(param->notify.value, param->notify.value_len + 0).c_str());
+
+      // Composite two short notifications into a complete one
+      // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
+      if (!incomplete_notify_value_received_ && param->notify.value_len == 20 && param->notify.value[0] == 0xFF &&
+          param->notify.value[1] == 0x55) {
+        memcpy(this->composite_notfiy_value_, param->notify.value, param->notify.value_len);
+        this->incomplete_notify_value_received_ = true;
+        break;
+      }
+
+      // 00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19 (16)
+      if (this->incomplete_notify_value_received_ && param->notify.value_len == 16) {
+        memcpy(this->composite_notfiy_value_ + 20, param->notify.value, param->notify.value_len);
+        // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19
+        this->decode_(this->composite_notfiy_value_, 36);
+        this->incomplete_notify_value_received_ = false;
+        this->composite_notfiy_value_[0] = 0x00;
+        break;
+      }
+
       this->decode_(param->notify.value, param->notify.value_len);
 
       break;
