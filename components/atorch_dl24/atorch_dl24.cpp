@@ -75,7 +75,8 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       if (param->notify.handle != this->char_handle_)
         break;
 
-      ESP_LOGVV(TAG, "Notification received: %s", hexencode(param->notify.value, param->notify.value_len + 0).c_str());
+      ESP_LOGVV(TAG, "Notification received: %s",
+                format_hex_pretty(param->notify.value, param->notify.value_len + 0).c_str());
 
       // Composite two short notifications into a complete one
       // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
