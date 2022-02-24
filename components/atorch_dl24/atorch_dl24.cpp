@@ -80,7 +80,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 
       // Composite two short notifications into a complete one
       // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
-      if (!incomplete_notify_value_received_ && param->notify.value_len == 20 && param->notify.value[0] == 0xFF &&
+      if (!this->incomplete_notify_value_received_ && param->notify.value_len == 20 && param->notify.value[0] == 0xFF &&
           param->notify.value[1] == 0x55) {
         memcpy(this->composite_notfiy_value_, param->notify.value, param->notify.value_len);
         this->incomplete_notify_value_received_ = true;
