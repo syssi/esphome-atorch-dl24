@@ -82,7 +82,6 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
       if (!this->incomplete_notify_value_received_ && param->notify.value_len == 20 && param->notify.value[0] == 0xFF &&
           param->notify.value[1] == 0x55) {
-        ESP_LOGD(TAG, "Incomplete frame stored");
         memcpy(this->composite_notfiy_value_, param->notify.value, param->notify.value_len);
         this->incomplete_notify_value_received_ = true;
         break;
@@ -90,7 +89,6 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 
       // 00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19 (16)
       if (this->incomplete_notify_value_received_ && param->notify.value_len == 16) {
-        ESP_LOGD(TAG, "Incomplete frame completed");
         memcpy(this->composite_notfiy_value_ + 20, param->notify.value, param->notify.value_len);
         // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19
         this->decode_(this->composite_notfiy_value_, 36);
