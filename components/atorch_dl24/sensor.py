@@ -117,15 +117,15 @@ CONFIG_SCHEMA = cv.Schema(
 ).extend(ble_client.BLE_CLIENT_SCHEMA)
 
 
-def to_code(config):
+async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
-    yield cg.register_component(var, config)
-    yield ble_client.register_ble_node(var, config)
+    await cg.register_component(var, config)
+    await ble_client.register_ble_node(var, config)
 
     cg.add(var.set_check_crc(config[CONF_CHECK_CRC]))
 
     for key in SENSORS:
         if key in config:
             conf = config[key]
-            sens = yield sensor.new_sensor(conf)
+            sens = await sensor.new_sensor(conf)
             cg.add(getattr(var, f"set_{key}_sensor")(sens))
