@@ -159,7 +159,7 @@ jobs:
           esphome version
       - name: Write secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: 41:B8:12:0A:A8:37" > secrets.yaml'
       - run: |
           esphome -s external_components_source components config esp32-ac-meter-example.yaml
           esphome -s external_components_source components config esp32-ac-meter-example-faker.yaml
@@ -203,7 +203,7 @@ jobs:
           echo "::add-matcher::.github/workflows/matchers/python.json"
       - name: Write secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
+        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: 41:B8:12:0A:A8:37" > secrets.yaml'
       - run: |
           esphome -s external_components_source components compile esp32-ac-meter-example-faker.yaml
           esphome -s external_components_source components compile esp32-dc-meter-example-faker.yaml
