@@ -36,6 +36,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_price_per_kwh_sensor(sensor::Sensor *price_per_kwh_sensor) { price_per_kwh_sensor_ = price_per_kwh_sensor; }
   void set_frequency_sensor(sensor::Sensor *frequency_sensor) { frequency_sensor_ = frequency_sensor; }
   void set_power_factor_sensor(sensor::Sensor *power_factor_sensor) { power_factor_sensor_ = power_factor_sensor; }
+  void set_runtime_sensor(sensor::Sensor *runtime_sensor) { runtime_sensor_ = runtime_sensor; }
 
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
   void decode(const uint8_t *data, uint16_t length);
@@ -59,6 +60,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *price_per_kwh_sensor_{nullptr};
   sensor::Sensor *frequency_sensor_{nullptr};
   sensor::Sensor *power_factor_sensor_{nullptr};
+  sensor::Sensor *runtime_sensor_{nullptr};
 
   bool check_crc_;
   bool incomplete_notify_value_received_ = false;

@@ -62,3 +62,5 @@ sensor:
       name: "${name} power_factor"
     price_per_kwh:
       name: "${name} price per kwh"
+    runtime:
+      name: "${name} runtime"

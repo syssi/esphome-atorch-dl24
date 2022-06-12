@@ -56,3 +56,5 @@ sensor:
       name: "${name} dim backlight"
     running:
       name: "${name} running"
+    runtime:
+      name: "${name} runtime"
