@@ -8,13 +8,17 @@ from esphome.const import (
     CONF_ID,
     CONF_POWER,
     CONF_TEMPERATURE,
+    CONF_FREQUENCY,
+    CONF_POWER_FACTOR,
     CONF_VOLTAGE,
     DEVICE_CLASS_CURRENT,
     DEVICE_CLASS_EMPTY,
     DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_POWER_FACTOR,
     DEVICE_CLASS_POWER,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ICON_CURRENT_AC,
     ICON_COUNTER,
     ICON_EMPTY,
     ICON_TIMER,
@@ -23,6 +27,7 @@ from esphome.const import (
     UNIT_CELSIUS,
     UNIT_EMPTY,
     UNIT_SECOND,
+    UNIT_HERTZ,
     UNIT_VOLT,
     UNIT_WATT,
     UNIT_WATT_HOURS,
@@ -33,8 +38,11 @@ CODEOWNERS = ["@syssi"]
 CONF_CHECK_CRC = "check_crc"
 CONF_DIM_BACKLIGHT = "dim_backlight"
 CONF_RUNNING = "running"
+
 CONF_USB_DATA_MINUS = "usb_data_minus"
 CONF_USB_DATA_PLUS = "usb_data_plus"
+
+CONF_PRICE_PER_KWH = "price_per_kwh"
 
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
@@ -51,6 +59,9 @@ SENSORS = [
     CONF_RUNNING,
     CONF_USB_DATA_MINUS,
     CONF_USB_DATA_PLUS,
+    CONF_PRICE_PER_KWH,
+    CONF_FREQUENCY,
+    CONF_POWER_FACTOR,
 ]
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
@@ -129,6 +140,25 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_EMPTY,
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_PRICE_PER_KWH): sensor.sensor_schema(
+            unit_of_measurement=UNIT_EMPTY,
+            icon=ICON_COUNTER,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_FREQUENCY): sensor.sensor_schema(
+            unit_of_measurement=UNIT_HERTZ,
+            icon=ICON_CURRENT_AC,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_POWER_FACTOR): sensor.sensor_schema(
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_POWER_FACTOR,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
     }
