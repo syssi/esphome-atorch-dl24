@@ -35,11 +35,14 @@ ble_client:
   - mac_address: ${dl24_mac_address}
     id: dummyload0
 
-sensor:
-  - platform: atorch_dl24
-    id: dl24
+atorch_dl24:
+  - id: dl24
     ble_client_id: dummyload0
     check_crc: true
+
+sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: dl24
     voltage:
       name: "${name} voltage"
     current:
