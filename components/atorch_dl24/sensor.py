@@ -34,7 +34,7 @@ from esphome.const import (
     UNIT_WATT_HOURS,
 )
 
-from . import CONF_ATORCH_DL24_ID, AtorchDL24
+from . import ATORCH_DL24_COMPONENT_SCHEMA, CONF_ATORCH_DL24_ID
 
 DEPENDENCIES = ["atorch_dl24"]
 
@@ -72,9 +72,8 @@ SENSORS = [
 
 
 # pylint: disable=too-many-function-args
-CONFIG_SCHEMA = cv.Schema(
+CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
-        cv.GenerateID(CONF_ATORCH_DL24_ID): cv.use_id(AtorchDL24),
         cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,

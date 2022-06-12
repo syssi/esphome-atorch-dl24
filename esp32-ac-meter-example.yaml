@@ -40,6 +40,12 @@ atorch_dl24:
     ble_client_id: ble_client0
     check_crc: true
 
+binary_sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    running:
+      name: "${name} running"
+
 sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
@@ -57,8 +63,6 @@ sensor:
       name: "${name} temperature"
     dim_backlight:
       name: "${name} dim backlight"
-    running:
-      name: "${name} running"
     frequency:
       name: "${name} frequency"
     power_factor:

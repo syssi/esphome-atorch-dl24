@@ -14,6 +14,12 @@ CONF_CHECK_CRC = "check_crc"
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
 AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Component)
 
+ATORCH_DL24_COMPONENT_SCHEMA = cv.Schema(
+    {
+        cv.GenerateID(CONF_ATORCH_DL24_ID): cv.use_id(AtorchDL24),
+    }
+)
+
 CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AtorchDL24),

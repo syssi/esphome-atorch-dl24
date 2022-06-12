@@ -42,6 +42,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
   LOG_SENSOR(" ", "Dim Backlight", this->dim_backlight_sensor_);
   LOG_SENSOR(" ", "Running", this->running_sensor_);
+  LOG_BINARY_SENSOR(" ", "Running", this->running_binary_sensor_);
   LOG_SENSOR(" ", "USB Data Minus", this->usb_data_minus_sensor_);
   LOG_SENSOR(" ", "USB Data Plus", this->usb_data_plus_sensor_);
   LOG_SENSOR(" ", "Price per kWh", this->price_per_kwh_sensor_);
@@ -68,6 +69,15 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       this->publish_state_(this->temperature_sensor_, NAN);
       this->publish_state_(this->dim_backlight_sensor_, NAN);
       this->publish_state_(this->running_sensor_, NAN);
+      this->publish_state_(this->runtime_sensor_, NAN);
+      this->publish_state_(this->runtime_formatted_text_sensor_, "");
+
+      this->publish_state_(this->price_per_kwh_sensor_, NAN);
+      this->publish_state_(this->frequency_sensor_, NAN);
+      this->publish_state_(this->power_factor_sensor_, NAN);
+
+      this->publish_state_(this->usb_data_minus_sensor_, NAN);
+      this->publish_state_(this->usb_data_plus_sensor_, NAN);
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
@@ -240,8 +250,11 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
     this->publish_state_(this->runtime_formatted_text_sensor_, format_runtime_(runtime));
   }
 
-  if (previous_value_ != 61)
-    this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[29]));
+  if (previous_value_ != 61) {
+    bool running = previous_value_ != data[29];
+    this->publish_state_(this->running_sensor_, (float) running);  // @DEPRECATED
+    this->publish_state_(this->running_binary_sensor_, running);
+  }
   previous_value_ = data[29];
 
   // 0x3C:                 Dim backlight          60 seconds
@@ -305,8 +318,11 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
     this->publish_state_(this->runtime_formatted_text_sensor_, format_runtime_(runtime));
   }
 
-  if (previous_value_ != 61)
-    this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[26]));
+  if (previous_value_ != 61) {
+    bool running = previous_value_ != data[26];
+    this->publish_state_(this->running_sensor_, (float) running);  // @DEPRECATED
+    this->publish_state_(this->running_binary_sensor_, running);
+  }
   previous_value_ = data[26];
 
   // 0x00:                 Backlight
@@ -314,6 +330,13 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
 
   // 0x00 0x00 0x00 0x00 0x00 0x00: Unknown
   // 0x4E:                 Checksum
+}
+
+void AtorchDL24::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {
+  if (binary_sensor == nullptr)
+    return;
+
+  binary_sensor->publish_state(state);
 }
 
 void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
