@@ -81,7 +81,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *power_factor_sensor_{nullptr};
   sensor::Sensor *runtime_sensor_{nullptr};
 
-  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *runtime_formatted_text_sensor_;
 
   bool check_crc_;
   bool incomplete_notify_value_received_ = false;
