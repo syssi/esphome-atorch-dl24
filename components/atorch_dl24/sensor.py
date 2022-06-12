@@ -1,12 +1,11 @@
 import esphome.codegen as cg
-from esphome.components import ble_client, sensor
+from esphome.components import sensor
 import esphome.config_validation as cv
 from esphome.const import (
     CONF_CAPACITY,
     CONF_CURRENT,
     CONF_ENERGY,
     CONF_FREQUENCY,
-    CONF_ID,
     CONF_POWER,
     CONF_POWER_FACTOR,
     CONF_TEMPERATURE,
@@ -35,9 +34,12 @@ from esphome.const import (
     UNIT_WATT_HOURS,
 )
 
+from . import CONF_ATORCH_DL24_ID, AtorchDL24
+
+DEPENDENCIES = ["atorch_dl24"]
+
 CODEOWNERS = ["@syssi"]
 
-CONF_CHECK_CRC = "check_crc"
 CONF_DIM_BACKLIGHT = "dim_backlight"
 CONF_RUNNING = "running"
 
@@ -68,14 +70,11 @@ SENSORS = [
     CONF_RUNTIME,
 ]
 
-atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
-AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Component)
 
 # pylint: disable=too-many-function-args
 CONFIG_SCHEMA = cv.Schema(
     {
-        cv.GenerateID(): cv.declare_id(AtorchDL24),
-        cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
+        cv.GenerateID(CONF_ATORCH_DL24_ID): cv.use_id(AtorchDL24),
         cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
@@ -173,18 +172,13 @@ CONFIG_SCHEMA = cv.Schema(
             state_class=STATE_CLASS_TOTAL_INCREASING,
         ),
     }
-).extend(ble_client.BLE_CLIENT_SCHEMA)
+)
 
 
 async def to_code(config):
-    var = cg.new_Pvariable(config[CONF_ID])
-    await cg.register_component(var, config)
-    await ble_client.register_ble_node(var, config)
-
-    cg.add(var.set_check_crc(config[CONF_CHECK_CRC]))
-
+    hub = await cg.get_variable(config[CONF_ATORCH_DL24_ID])
     for key in SENSORS:
         if key in config:
             conf = config[key]
             sens = await sensor.new_sensor(conf)
-            cg.add(getattr(var, f"set_{key}_sensor")(sens))
+            cg.add(getattr(hub, f"set_{key}_sensor")(sens))

@@ -48,6 +48,7 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Frequency ", this->frequency_sensor_);
   LOG_SENSOR(" ", "Power Factor", this->power_factor_sensor_);
   LOG_SENSOR(" ", "Runtime", this->runtime_sensor_);
+  LOG_TEXT_SENSOR(" ", "Runtime Formatted", this->runtime_formatted_text_sensor_);
 }
 
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -233,7 +234,11 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // 0x00 0x02:            Hour                   2 h
   // 0x21:                 Minute                 33 min
   // 0x1F:                 Second                 31 sec
-  this->publish_state_(this->runtime_sensor_, (dl24_get_16bit(26) * 3600) + (data[28] * 60) + data[29]);
+  uint32_t runtime = (dl24_get_16bit(26) * 3600) + (data[28] * 60) + data[29];
+  this->publish_state_(this->runtime_sensor_, (float) runtime);
+  if (this->runtime_formatted_text_sensor_ != nullptr) {
+    this->publish_state_(this->runtime_formatted_text_sensor_, format_runtime_(runtime));
+  }
 
   if (previous_value_ != 61)
     this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[29]));
@@ -294,7 +299,11 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   // 0x12 0x2E:            Hour                   4654 h
   // 0x33:                 Minute                 51 min
   // 0x3C:                 Second                 60 sec
-  this->publish_state_(this->runtime_sensor_, (dl24_get_16bit(23) * 3600) + (data[25] * 60) + data[26]);
+  uint32_t runtime = (dl24_get_16bit(23) * 3600) + (data[25] * 60) + data[26];
+  this->publish_state_(this->runtime_sensor_, (float) runtime);
+  if (this->runtime_formatted_text_sensor_ != nullptr) {
+    this->publish_state_(this->runtime_formatted_text_sensor_, format_runtime_(runtime));
+  }
 
   if (previous_value_ != 61)
     this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[26]));
@@ -312,6 +321,13 @@ void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
     return;
 
   sensor->publish_state(value);
+}
+
+void AtorchDL24::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
+  if (text_sensor == nullptr)
+    return;
+
+  text_sensor->publish_state(state);
 }
 
 }  // namespace atorch_dl24
