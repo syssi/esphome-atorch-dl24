@@ -59,6 +59,8 @@ mqtt_password: MY_MQTT_PASSWORD
 
 wifi_ssid: MY_WIFI_SSID
 wifi_password: MY_WIFI_PASSWORD
+
+dl24_mac_address: MY_DL24_MAC_ADDRESS
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs

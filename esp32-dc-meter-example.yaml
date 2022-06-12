@@ -1,7 +1,7 @@
 substitutions:
   name: atorch-dl24
   external_components_source: github://syssi/esphome-atorch-dl24@main
-  dl24_mac_address: 41:B8:12:0A:A8:37
+  dl24_mac_address: !secret dl24_mac_address
 
 esphome:
   name: ${name}
