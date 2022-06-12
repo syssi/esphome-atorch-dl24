@@ -21,8 +21,10 @@ from esphome.const import (
     ICON_COUNTER,
     ICON_CURRENT_AC,
     ICON_EMPTY,
+    ICON_TIMELAPSE,
     ICON_TIMER,
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
     UNIT_AMPERE,
     UNIT_CELSIUS,
     UNIT_EMPTY,
@@ -43,6 +45,7 @@ CONF_USB_DATA_MINUS = "usb_data_minus"
 CONF_USB_DATA_PLUS = "usb_data_plus"
 
 CONF_PRICE_PER_KWH = "price_per_kwh"
+CONF_RUNTIME = "runtime"
 
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
@@ -62,6 +65,7 @@ SENSORS = [
     CONF_PRICE_PER_KWH,
     CONF_FREQUENCY,
     CONF_POWER_FACTOR,
+    CONF_RUNTIME,
 ]
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
@@ -160,6 +164,13 @@ CONFIG_SCHEMA = cv.Schema(
             accuracy_decimals=2,
             device_class=DEVICE_CLASS_POWER_FACTOR,
             state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_RUNTIME): sensor.sensor_schema(
+            unit_of_measurement=UNIT_SECOND,
+            icon=ICON_TIMELAPSE,
+            accuracy_decimals=0,
+            device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_TOTAL_INCREASING,
         ),
     }
 ).extend(ble_client.BLE_CLIENT_SCHEMA)

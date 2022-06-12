@@ -60,3 +60,5 @@ sensor:
       name: "${name} usb data minus"
     usb_data_plus:
       name: "${name} usb data plus"
+    runtime:
+      name: "${name} runtime"
