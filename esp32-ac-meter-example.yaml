@@ -56,3 +56,9 @@ sensor:
       name: "${name} dim backlight"
     running:
       name: "${name} running"
+    frequency:
+      name: "${name} frequency"
+    power_factor:
+      name: "${name} power_factor"
+    price_per_kwh:
+      name: "${name} price per kwh"
