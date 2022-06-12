@@ -151,7 +151,7 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
   switch (frame_type) {
     case 0x01:
     case 0x02:
-      this->decode_dc_and_ac_(data, length);
+      this->decode_ac_and_dc_(data, length);
       break;
     case 0x03:
       this->decode_usb_(data, length);
