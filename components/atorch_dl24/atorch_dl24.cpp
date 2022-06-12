@@ -11,6 +11,17 @@ static const char *const TAG = "atorch_dl24";
 static const uint16_t DL24_SERVICE_UUID = 0xFFE0;
 static const uint16_t DL24_CHARACTERISTIC_UUID = 0xFFE1;
 
+static const uint8_t START_OF_FRAME_BYTE1 = 0xFF;
+static const uint8_t START_OF_FRAME_BYTE2 = 0x55;
+
+static const uint8_t MESSAGE_TYPE_REPORT = 0x01;
+static const uint8_t MESSAGE_TYPE_REPLY = 0x02;
+static const uint8_t MESSAGE_TYPE_COMMAND = 0x11;
+
+static const uint8_t DEVICE_TYPE_AC_METER = 0x01;
+static const uint8_t DEVICE_TYPE_DC_METER = 0x02;
+static const uint8_t DEVICE_TYPE_USB_METER = 0x03;
+
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
 
@@ -31,6 +42,11 @@ void AtorchDL24::dump_config() {
   LOG_SENSOR(" ", "Temperature", this->temperature_sensor_);
   LOG_SENSOR(" ", "Dim Backlight", this->dim_backlight_sensor_);
   LOG_SENSOR(" ", "Running", this->running_sensor_);
+  LOG_SENSOR(" ", "USB Data Minus", this->usb_data_minus_sensor_);
+  LOG_SENSOR(" ", "USB Data Plus", this->usb_data_plus_sensor_);
+  LOG_SENSOR(" ", "Price per kWh", this->price_per_kwh_sensor_);
+  LOG_SENSOR(" ", "Frequency ", this->frequency_sensor_);
+  LOG_SENSOR(" ", "Power Factor", this->power_factor_sensor_);
 }
 
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
@@ -80,8 +96,8 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 
       // Composite two short notifications into a complete one
       // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
-      if (!this->incomplete_notify_value_received_ && param->notify.value_len == 20 && param->notify.value[0] == 0xFF &&
-          param->notify.value[1] == 0x55) {
+      if (!this->incomplete_notify_value_received_ && param->notify.value_len == 20 &&
+          param->notify.value[0] == START_OF_FRAME_BYTE1 && param->notify.value[1] == START_OF_FRAME_BYTE2) {
         memcpy(this->composite_notfiy_value_, param->notify.value, param->notify.value_len);
         this->incomplete_notify_value_received_ = true;
         break;
@@ -127,37 +143,37 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 // FF5501030001FB000001006C3F00006C4400070006001A00471C1A3C0000000000000078
 // https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-meter-usb.spec.ts
 void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
-  if (this->check_crc_ && crc(data, length - 1) != data[35]) {
-    ESP_LOGW(TAG, "CRC check failed. Skipping frame.");
-    return;
-  }
-
   if (length != 36) {
-    ESP_LOGW(TAG, "Frame skipped because of invalid length.");
+    ESP_LOGW(TAG, "Report skipped because of invalid length");
     return;
   }
 
-  if (data[0] != 0xFF && data[1] != 0x55) {
+  if (this->check_crc_ && crc(data, length - 1) != data[35]) {
+    ESP_LOGW(TAG, "CRC check failed. Skipping frame");
+    return;
+  }
+
+  if (data[0] != START_OF_FRAME_BYTE1 && data[1] != START_OF_FRAME_BYTE2) {
     ESP_LOGW(TAG, "Invalid header");
     return;
   }
 
-  if (data[2] != 0x01) {
+  if (data[2] != MESSAGE_TYPE_REPORT) {
     ESP_LOGW(TAG, "Unsupported message type (%02X)", data[2]);
     return;
   }
 
-  uint8_t frame_type = data[3];
-  switch (frame_type) {
-    case 0x01:
-    case 0x02:
+  uint8_t device_type = data[3];
+  switch (device_type) {
+    case DEVICE_TYPE_AC_METER:
+    case DEVICE_TYPE_DC_METER:
       this->decode_ac_and_dc_(data, length);
       break;
-    case 0x03:
+    case DEVICE_TYPE_USB_METER:
       this->decode_usb_(data, length);
       break;
     default:
-      ESP_LOGW(TAG, "Unsupported device type (%02X)", frame_type);
+      ESP_LOGW(TAG, "Unsupported device type (%02X)", device_type);
   }
 }
 
@@ -182,8 +198,8 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // FF.55.01.02.00.00.20.00.4E.23.00.13.FD.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1F.3C.00.00.00.00.1C
   //
   // 0xFF 0x55:            Magic header
-  // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
-  // 0x02:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
+  // 0x01:                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
+  // 0x02:                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
   // 0x00 0x00 0x20:       Voltage                32 * 0.1 = 3.2 V
   float voltage = dl24_get_24bit(4) * 0.1f;
   this->publish_state_(this->voltage_sensor_, voltage);
@@ -245,8 +261,8 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   // FF.55.01.03.00.01.FB.00.00.01.00.6C.3F.00.00.6C.44.00.07.00.06.00.1A.00.47.1C.1A.3C.00.00.00.00.00.00.00.78
   //
   // 0xFF 0x55:            Magic header
-  // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
-  // 0x03:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
+  // 0x01:                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
+  // 0x03:                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
   // 0x00 0x01 0xF3:       Voltage                499 * 0.01 = 4.99 V
   float voltage = dl24_get_24bit(4) * 0.01f;
   this->publish_state_(this->voltage_sensor_, voltage);
