@@ -116,3 +116,4 @@ esphome run esp32-dc-meter-example.yaml
 
 * https://github.com/syssi/esphome-atorch-dl24/blob/main/docs/protocol-design.md
 * https://github.com/NiceLabs/atorch-console
+* https://auto-scripting.com/2020/05/03/atorch-dl24-hack-1/

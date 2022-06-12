@@ -9,7 +9,8 @@ namespace atorch_dl24 {
 static const char *const TAG = "atorch_dl24";
 
 static const uint16_t DL24_SERVICE_UUID = 0xFFE0;
-static const uint16_t DL24_CHARACTERISTIC_UUID = 0xFFE1;
+static const uint16_t DL24_REPORT_CHARACTERISTIC_UUID = 0xFFE1;
+static const uint16_t DL24_COMMAND_CHARACTERISTIC_UUID = 0xFFE2;
 
 static const uint8_t START_OF_FRAME_BYTE1 = 0xFF;
 static const uint8_t START_OF_FRAME_BYTE2 = 0x55;
@@ -22,6 +23,10 @@ static const uint8_t DEVICE_TYPE_AC_METER = 0x01;
 static const uint8_t DEVICE_TYPE_DC_METER = 0x02;
 static const uint8_t DEVICE_TYPE_USB_METER = 0x03;
 
+static const uint8_t COMMAND_SUCCESS = 0x01;
+static const uint8_t COMMAND_FAILED = 0x02;
+static const uint8_t COMMAND_UNSUPPORTED = 0x03;
+
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
 
@@ -30,6 +35,29 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
     crc = crc + data[i];
   }
   return crc ^ 0x44;
+}
+
+bool AtorchDL24::write_register(uint8_t device_type, uint8_t address, uint32_t value) {
+  uint8_t frame[10];
+  frame[0] = START_OF_FRAME_BYTE1;
+  frame[1] = START_OF_FRAME_BYTE2;
+  frame[2] = MESSAGE_TYPE_COMMAND;
+  frame[3] = device_type;
+  frame[4] = address;
+  frame[5] = value >> 24;
+  frame[6] = value >> 16;
+  frame[7] = value >> 8;
+  frame[8] = value >> 0;
+  frame[9] = crc(frame, sizeof(frame) - 1);
+
+  ESP_LOGI(TAG, "Write command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  auto status = esp_ble_gattc_write_char(this->parent_->gattc_if, this->parent_->conn_id, this->char_command_handle_,
+                                         sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
+
+  if (status)
+    ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", this->parent_->address_str().c_str(), status);
+
+  return (status == 0);
 }
 
 void AtorchDL24::dump_config() {
@@ -81,18 +109,26 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       break;
     }
     case ESP_GATTC_SEARCH_CMPL_EVT: {
-      auto *chr = this->parent_->get_characteristic(DL24_SERVICE_UUID, DL24_CHARACTERISTIC_UUID);
-      if (chr == nullptr) {
-        ESP_LOGE(TAG, "[%s] No control service found at device, not an DL24..?", this->parent_->address_str().c_str());
+      auto *char_notify = this->parent_->get_characteristic(DL24_SERVICE_UUID, DL24_REPORT_CHARACTERISTIC_UUID);
+      if (char_notify == nullptr) {
+        ESP_LOGE(TAG, "[%s] No report service found at device, not an DL24..?", this->parent_->address_str().c_str());
         break;
       }
-      this->char_handle_ = chr->handle;
+      this->char_notify_handle_ = char_notify->handle;
 
       auto status =
-          esp_ble_gattc_register_for_notify(this->parent()->gattc_if, this->parent()->remote_bda, chr->handle);
+          esp_ble_gattc_register_for_notify(this->parent()->gattc_if, this->parent()->remote_bda, char_notify->handle);
       if (status) {
         ESP_LOGW(TAG, "esp_ble_gattc_register_for_notify failed, status=%d", status);
       }
+
+      auto *char_command = this->parent_->get_characteristic(DL24_SERVICE_UUID, DL24_COMMAND_CHARACTERISTIC_UUID);
+      if (char_command == nullptr) {
+        ESP_LOGE(TAG, "[%s] No control service found at device, not an DL24..?", this->parent_->address_str().c_str());
+        break;
+      }
+      this->char_command_handle_ = char_command->handle;
+
       break;
     }
     case ESP_GATTC_REG_FOR_NOTIFY_EVT: {
@@ -100,7 +136,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       break;
     }
     case ESP_GATTC_NOTIFY_EVT: {
-      if (param->notify.handle != this->char_handle_)
+      if (param->notify.handle != this->char_notify_handle_)
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s",
@@ -154,14 +190,25 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 // FF5501030001CD00007F003CC80000554E0009000A00000047300D3C000000000000008F
 // FF5501030001FB000001006C3F00006C4400070006001A00471C1A3C0000000000000078
 // https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-meter-usb.spec.ts
+
+// Reply
+//
+// FF55020101000040
+// FF55020103000042
+// FF55020000000046
+// https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-reply.spec.ts
 void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
-  if (length != 36) {
-    ESP_LOGW(TAG, "Report skipped because of invalid length");
+  if (length != 36 && length != 8) {
+    ESP_LOGW(TAG, "Frame skipped because of invalid length (%u)", length);
+    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
     return;
   }
 
-  if (this->check_crc_ && crc(data, length - 1) != data[35]) {
-    ESP_LOGW(TAG, "CRC check failed. Skipping frame");
+  uint8_t computed_crc = crc(data, length - 1);
+  uint8_t remote_crc = data[length - 1];
+  if (this->check_crc_ && computed_crc != remote_crc) {
+    ESP_LOGW(TAG, "CRC check failed (%02X != %02X). Skipping frame", computed_crc, remote_crc);
+    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
     return;
   }
 
@@ -170,12 +217,40 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
     return;
   }
 
+  if (data[2] == MESSAGE_TYPE_REPLY) {
+    // <- 0xFF 0x55 0x02 0x01 0x01 0x00 0x00 0x40
+    if (data[3] == 0x01 && data[4] == COMMAND_SUCCESS) {
+      ESP_LOGI(TAG, "Reply received: Command successful");
+      return;
+    }
+
+    // <- 0xFF 0x55 0x02 0x01 0x02 0x00 0x00 0x41
+    if (data[3] == 0x01 && data[4] == COMMAND_FAILED) {
+      ESP_LOGI(TAG, "Reply received: Command failed");
+      return;
+    }
+
+    if (data[3] == 0x01 && data[4] == COMMAND_UNSUPPORTED) {
+      ESP_LOGI(TAG, "Reply received: Command unsupported");
+      return;
+    }
+
+    ESP_LOGW(TAG, "Unsupported reply: %02X %02X", data[3], data[4]);
+    return;
+  }
+
   if (data[2] != MESSAGE_TYPE_REPORT) {
     ESP_LOGW(TAG, "Unsupported message type (%02X)", data[2]);
     return;
   }
 
+  ESP_LOGI(TAG, "Status report received");
+
   uint8_t device_type = data[3];
+
+  if (this->device_type_ == 0x00) {
+    this->device_type_ = device_type;
+  }
   switch (device_type) {
     case DEVICE_TYPE_AC_METER:
     case DEVICE_TYPE_DC_METER:

@@ -77,3 +77,23 @@ text_sensor:
     atorch_dl24_id: atorch0
     runtime_formatted:
       name: "${name} runtime formatted"
+
+button:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    reset_energy:
+      name: "${name} reset energy"
+    reset_capacity:
+      name: "${name} reset capacity"
+    reset_runtime:
+      name: "${name} reset runtime"
+    reset_all:
+      name: "${name} reset all"
+    plus:
+      name: "${name} plus"
+    minus:
+      name: "${name} minus"
+    setup:
+      name: "${name} setup"
+    enter:
+      name: "${name} enter"
