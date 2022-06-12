@@ -243,7 +243,7 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
   // 0x03:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
   // 0x00 0x01 0xF3:       Voltage                499 * 0.01 = 4.99 V
-  float voltage = dl24_get_24bit(4) * 0.1f;
+  float voltage = dl24_get_24bit(4) * 0.01f;
   this->publish_state_(this->voltage_sensor_, voltage);
 
   // 0x00 0x00 0x00:       Current                0 * 0.01 = 0.00 A
@@ -252,7 +252,7 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   this->publish_state_(this->power_sensor_, voltage * current);
 
   // 0x00 0x06 0x38:       Capacity in Ah         1592 * 0.001 = 1.592 Ah
-  this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.01f);
+  this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.001f);
 
   // 0x00 0x00 0x03 0x11:  Energy in Wh           785 * 0.01 = 7.85 Wh
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 0.01f);
