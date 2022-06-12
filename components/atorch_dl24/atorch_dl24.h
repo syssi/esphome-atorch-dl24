@@ -63,8 +63,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
     int minutes = seconds / 60;
     seconds = seconds % 60;
     return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
-           (hours ? to_string(hours) + "h" : "") + (minutes ? to_string(days) + "m " : "") +
-           (seconds ? to_string(days) + "s " : "");
+           (hours ? to_string(hours) + "h " : "") + (minutes ? to_string(minutes) + "m " : "") +
+           (seconds ? to_string(seconds) + "s" : "");
   }
 
   uint16_t char_handle_;
