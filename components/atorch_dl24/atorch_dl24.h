@@ -3,6 +3,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/ble_client/ble_client.h"
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
+#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 
@@ -21,6 +22,10 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
                            esp_ble_gattc_cb_param_t *param) override;
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
+
+  void set_running_binary_sensor(binary_sensor::BinarySensor *running_binary_sensor) {
+    running_binary_sensor_ = running_binary_sensor;
+  }
 
   void set_voltage_sensor(sensor::Sensor *voltage_sensor) { voltage_sensor_ = voltage_sensor; }
   void set_current_sensor(sensor::Sensor *current_sensor) { current_sensor_ = current_sensor; }
@@ -67,7 +72,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
            (seconds ? to_string(seconds) + "s" : "");
   }
 
-  uint16_t char_handle_;
+  binary_sensor::BinarySensor *running_binary_sensor_;
+
   sensor::Sensor *voltage_sensor_{nullptr};
   sensor::Sensor *current_sensor_{nullptr};
   sensor::Sensor *power_sensor_{nullptr};
@@ -90,6 +96,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
 
   uint8_t previous_value_ = 61;
   uint8_t composite_notfiy_value_[36];
+  uint16_t char_handle_;
 };
 
 }  // namespace atorch_dl24
