@@ -89,7 +89,8 @@ esphome run esp32-dc-meter-example.yaml
 [D][sensor:118]: 'atorch-dl24 capacity': Sending state 61.98000 Ah with 4 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
-[D][atorch_dl24:146]:   Timer: 3:5:57
+[D][sensor:125]: 'atorch-dl24 runtime': Sending state 9206.00000 s with 0 decimals of accuracy
+[D][text_sensor:067]: 'atorch-dl24 runtime formatted': Sending state '2h 33m 26s'
 [D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 voltage': Sending state 3.30000 V with 1 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 current': Sending state 20.00400 A with 3 decimals of accuracy
@@ -97,7 +98,8 @@ esphome run esp32-dc-meter-example.yaml
 [D][sensor:118]: 'atorch-dl24 capacity': Sending state 61.98000 Ah with 4 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
-[D][atorch_dl24:146]:   Timer: 3:5:58
+[D][sensor:125]: 'atorch-dl24 runtime': Sending state 9207.00000 s with 0 decimals of accuracy
+[D][text_sensor:067]: 'atorch-dl24 runtime formatted': Sending state '2h 33m 27s'
 [D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 voltage': Sending state 3.30000 V with 1 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 current': Sending state 19.99600 A with 3 decimals of accuracy
@@ -105,7 +107,8 @@ esphome run esp32-dc-meter-example.yaml
 [D][sensor:118]: 'atorch-dl24 capacity': Sending state 61.99000 Ah with 4 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 energy': Sending state 210.00000 Wh with 0 decimals of accuracy
 [D][sensor:118]: 'atorch-dl24 temperature': Sending state 37.00000 °C with 0 decimals of accuracy
-[D][atorch_dl24:146]:   Timer: 3:5:59
+[D][sensor:125]: 'atorch-dl24 runtime': Sending state 9208.00000 s with 0 decimals of accuracy
+[D][text_sensor:067]: 'atorch-dl24 runtime formatted': Sending state '2h 33m 28s'
 [D][sensor:118]: 'atorch-dl24 dim backlight': Sending state 60.00000 s with 0 decimals of accuracy
 ```
 
