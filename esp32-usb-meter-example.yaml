@@ -55,3 +55,7 @@ sensor:
       name: "${name} dim backlight"
     running:
       name: "${name} running"
+    usb_data_minus:
+      name: "${name} usb data minus"
+    usb_data_plus:
+      name: "${name} usb data plus"

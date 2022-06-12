@@ -29,11 +29,17 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_temperature_sensor(sensor::Sensor *temperature_sensor) { temperature_sensor_ = temperature_sensor; }
   void set_dim_backlight_sensor(sensor::Sensor *dim_backlight_sensor) { dim_backlight_sensor_ = dim_backlight_sensor; }
   void set_running_sensor(sensor::Sensor *running_sensor) { running_sensor_ = running_sensor; }
+  void set_usb_data_minus_sensor(sensor::Sensor *usb_data_minus_sensor) {
+    usb_data_minus_sensor_ = usb_data_minus_sensor;
+  }
+  void set_usb_data_plus_sensor(sensor::Sensor *usb_data_plus_sensor) { usb_data_plus_sensor_ = usb_data_plus_sensor; }
 
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
 
  protected:
   void decode_(const uint8_t *data, uint16_t length);
+  void decode_ac_and_dc_(const uint8_t *data, uint16_t length);
+  void decode_usb_(const uint8_t *data, uint16_t length);
   void publish_state_(sensor::Sensor *sensor, float value);
 
   uint16_t char_handle_;
@@ -45,6 +51,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *temperature_sensor_{nullptr};
   sensor::Sensor *dim_backlight_sensor_{nullptr};
   sensor::Sensor *running_sensor_{nullptr};
+  sensor::Sensor *usb_data_minus_sensor_{nullptr};
+  sensor::Sensor *usb_data_plus_sensor_{nullptr};
 
   bool check_crc_;
   bool incomplete_notify_value_received_ = false;

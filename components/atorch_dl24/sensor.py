@@ -33,6 +33,8 @@ CODEOWNERS = ["@syssi"]
 CONF_CHECK_CRC = "check_crc"
 CONF_DIM_BACKLIGHT = "dim_backlight"
 CONF_RUNNING = "running"
+CONF_USB_DATA_MINUS = "usb_data_minus"
+CONF_USB_DATA_PLUS = "usb_data_plus"
 
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
@@ -47,6 +49,8 @@ SENSORS = [
     CONF_TEMPERATURE,
     CONF_DIM_BACKLIGHT,
     CONF_RUNNING,
+    CONF_USB_DATA_MINUS,
+    CONF_USB_DATA_PLUS,
 ]
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
@@ -60,7 +64,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
             unit_of_measurement=UNIT_VOLT,
             icon=ICON_EMPTY,
-            accuracy_decimals=1,
+            accuracy_decimals=2,
             device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
@@ -81,7 +85,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_CAPACITY,
-            accuracy_decimals=2,
+            accuracy_decimals=3,
             device_class=DEVICE_CLASS_ENERGY,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
@@ -111,6 +115,20 @@ CONFIG_SCHEMA = cv.Schema(
             icon=ICON_RUNNING,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_USB_DATA_MINUS): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_VOLTAGE,
+            state_class=STATE_CLASS_MEASUREMENT,
+        ),
+        cv.Optional(CONF_USB_DATA_PLUS): sensor.sensor_schema(
+            unit_of_measurement=UNIT_VOLT,
+            icon=ICON_EMPTY,
+            accuracy_decimals=2,
+            device_class=DEVICE_CLASS_VOLTAGE,
             state_class=STATE_CLASS_MEASUREMENT,
         ),
     }
