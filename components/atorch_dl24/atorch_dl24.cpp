@@ -127,23 +127,13 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 // FF5501030001FB000001006C3F00006C4400070006001A00471C1A3C0000000000000078
 // https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-meter-usb.spec.ts
 void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
-  auto dl24_get_16bit = [&](size_t i) -> uint16_t {
-    return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
-  };
-  auto dl24_get_24bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(data[i + 0]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 2]) << 0);
-  };
-  auto dl24_get_32bit = [&](size_t i) -> uint32_t {
-    return (uint32_t(dl24_get_16bit(i + 0)) << 16) | (uint32_t(dl24_get_16bit(i + 2)) << 0);
-  };
-
   if (this->check_crc_ && crc(data, length - 1) != data[35]) {
     ESP_LOGW(TAG, "CRC check failed. Skipping frame.");
     return;
   }
 
   if (length != 36) {
-    ESP_LOGW(TAG, "Frame skipped because of invalid length. USB meter report frames aren't supported right now.");
+    ESP_LOGW(TAG, "Frame skipped because of invalid length.");
     return;
   }
 
@@ -157,10 +147,30 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
     return;
   }
 
-  if (data[3] != 0x01 && data[3] != 0x02) {
-    ESP_LOGW(TAG, "Unsupported device type (%02X)", data[3]);
-    return;
+  uint8_t frame_type = data[3];
+  switch (frame_type) {
+    case 0x01:
+    case 0x02:
+      this->decode_ac_and_dc_(data, length);
+      break;
+    case 0x03:
+      this->decode_usb_(data, length);
+      break;
+    default:
+      ESP_LOGW(TAG, "Unsupported device type (%02X)", frame_type);
   }
+}
+
+void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
+  auto dl24_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
+  };
+  auto dl24_get_24bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 0]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 2]) << 0);
+  };
+  auto dl24_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(dl24_get_16bit(i + 0)) << 16) | (uint32_t(dl24_get_16bit(i + 2)) << 0);
+  };
 
   // Example responses
   //
@@ -180,7 +190,7 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
 
   // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
   float current = dl24_get_24bit(7) * 0.001f;
-  this->publish_state_(this->current_sensor_, dl24_get_24bit(7) * 0.001f);
+  this->publish_state_(this->current_sensor_, current);
   this->publish_state_(this->power_sensor_, voltage * current);
 
   // 0x00 0x13 0xFD:       Capacity in Ah        5117 * 0.01 = 51.17 Ah
@@ -193,7 +203,7 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
   // 0x00 0x00:            Frequency              value * 0.1 Hz
   // 0x00 0x00:            Power factor           value * 0.001 kW?
 
-  // 0x00 0x25:            Temperature            25 °C
+  // 0x00 0x25:            Temperature            37 °C
   this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
   // 0x00 0x02:            Hour                   2 h
@@ -209,6 +219,66 @@ void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
 
   // 0x00 0x00 0x00 0x00:  Unknown
   // 0x1C:                 Checksum
+}
+
+void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
+  auto dl24_get_16bit = [&](size_t i) -> uint16_t {
+    return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
+  };
+  auto dl24_get_24bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(data[i + 0]) << 16) | (uint32_t(data[i + 1]) << 8) | (uint32_t(data[i + 2]) << 0);
+  };
+  auto dl24_get_32bit = [&](size_t i) -> uint32_t {
+    return (uint32_t(dl24_get_16bit(i + 0)) << 16) | (uint32_t(dl24_get_16bit(i + 2)) << 0);
+  };
+
+  // Example responses
+  //
+  // FF.55.01.03.00.01.F3.00.00.00.00.06.38.00.00.03.11.00.07.00.0A.00.00.00.12.2E.33.3C.00.00.00.00.00.00.00.4E
+  // FF.55.01.03.00.01.FB.00.00.00.00.3C.C7.00.00.55.4E.00.07.00.07.00.00.00.47.2F.24.3C.00.00.00.00.00.00.00.CE
+  // FF.55.01.03.00.01.CD.00.00.7F.00.3C.C8.00.00.55.4E.00.09.00.0A.00.00.00.47.30.0D.3C.00.00.00.00.00.00.00.8F
+  // FF.55.01.03.00.01.FB.00.00.01.00.6C.3F.00.00.6C.44.00.07.00.06.00.1A.00.47.1C.1A.3C.00.00.00.00.00.00.00.78
+  //
+  // 0xFF 0x55:            Magic header
+  // 0x01:                 Message type           1: Report (32 byte), 2: Reply (4 byte), 11: Command (6 byte)
+  // 0x03:                 Device type            1: AC meter, 2: DC meter, 3: USB meter
+  // 0x00 0x01 0xF3:       Voltage                499 * 0.01 = 4.99 V
+  float voltage = dl24_get_24bit(4) * 0.1f;
+  this->publish_state_(this->voltage_sensor_, voltage);
+
+  // 0x00 0x00 0x00:       Current                0 * 0.01 = 0.00 A
+  float current = dl24_get_24bit(7) * 0.01f;
+  this->publish_state_(this->current_sensor_, current);
+  this->publish_state_(this->power_sensor_, voltage * current);
+
+  // 0x00 0x06 0x38:       Capacity in Ah         1592 * 0.001 = 1.592 Ah
+  this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.01f);
+
+  // 0x00 0x00 0x03 0x11:  Energy in Wh           785 * 0.01 = 7.85 Wh
+  this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 0.01f);
+
+  // 0x00 0x07:            USB D-                 7 * 0.01 = 0,07 V
+  this->publish_state_(this->usb_data_minus_sensor_, (float) dl24_get_16bit(17) * 0.01f);
+
+  // 0x00 0x0A:            USB D+                 10 * 0.01 = 0,10 V
+  this->publish_state_(this->usb_data_plus_sensor_, (float) dl24_get_16bit(19) * 0.01f);
+
+  // 0x00 0x00 0x00:       Temperature
+  this->publish_state_(this->temperature_sensor_, (float) dl24_get_24bit(21));
+
+  // 0x12 0x2E:            Hour                   4654 h
+  // 0x33:                 Minute                 51 min
+  // 0x3C:                 Second                 60 sec
+  ESP_LOGD(TAG, "  Timer: %02d:%02d:%02d", dl24_get_16bit(23), data[25], data[26]);
+  if (previous_value_ != 61)
+    this->publish_state_(this->running_sensor_, (float) (previous_value_ != data[26]));
+  previous_value_ = data[26];
+
+  // 0x00:                 Backlight
+  this->publish_state_(this->dim_backlight_sensor_, (float) data[27]);
+
+  // 0x00 0x00 0x00 0x00 0x00 0x00: Unknown
+  // 0x4E:                 Checksum
 }
 
 void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
