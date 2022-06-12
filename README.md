@@ -41,7 +41,7 @@ ESPHome component to monitor a Atorch DL24 dummy load via bluetooth
 
 ## Installation
 
-Use the `esp32-example.yaml` as proof of concept:
+Use the `esp32-dc-meter-example.yaml` as proof of concept:
 
 ```bash
 # Install esphome
@@ -62,7 +62,7 @@ wifi_password: MY_WIFI_PASSWORD
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs
-esphome run esp32-example.yaml
+esphome run esp32-dc-meter-example.yaml
 
 ```
 
