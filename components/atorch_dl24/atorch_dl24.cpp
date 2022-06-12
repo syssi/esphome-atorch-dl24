@@ -323,6 +323,13 @@ void AtorchDL24::publish_state_(sensor::Sensor *sensor, float value) {
   sensor->publish_state(value);
 }
 
+void AtorchDL24::publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state) {
+  if (text_sensor == nullptr)
+    return;
+
+  text_sensor->publish_state(state);
+}
+
 }  // namespace atorch_dl24
 }  // namespace esphome
 
