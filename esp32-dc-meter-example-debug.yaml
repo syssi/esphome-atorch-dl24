@@ -1,4 +1,4 @@
-<<: !include esp32-example.yaml
+<<: !include esp32-dc-meter-example.yaml
 
 logger:
   baud_rate: 0

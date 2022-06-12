@@ -35,9 +35,9 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_usb_data_plus_sensor(sensor::Sensor *usb_data_plus_sensor) { usb_data_plus_sensor_ = usb_data_plus_sensor; }
 
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
+  void decode(const uint8_t *data, uint16_t length);
 
  protected:
-  void decode_(const uint8_t *data, uint16_t length);
   void decode_ac_and_dc_(const uint8_t *data, uint16_t length);
   void decode_usb_(const uint8_t *data, uint16_t length);
   void publish_state_(sensor::Sensor *sensor, float value);
