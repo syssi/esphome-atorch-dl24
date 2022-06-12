@@ -1,0 +1,58 @@
+substitutions:
+  name: atorch-dl24
+  external_components_source: github://syssi/esphome-atorch-dl24@main
+  dl24_mac_address: 41:B8:12:0A:A8:37
+
+esphome:
+  name: ${name}
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+    version: latest
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+logger:
+
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${dl24_mac_address}
+    id: dummyload0
+
+sensor:
+  - platform: atorch_dl24
+    id: dl24
+    ble_client_id: dummyload0
+    check_crc: true
+    voltage:
+      name: "${name} voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    capacity:
+      name: "${name} capacity"
+    energy:
+      name: "${name} energy"
+    temperature:
+      name: "${name} temperature"
+    dim_backlight:
+      name: "${name} dim backlight"
+    running:
+      name: "${name} running"

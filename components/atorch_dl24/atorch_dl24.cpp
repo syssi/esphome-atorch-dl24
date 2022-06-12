@@ -91,13 +91,13 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       if (this->incomplete_notify_value_received_ && param->notify.value_len == 16) {
         memcpy(this->composite_notfiy_value_ + 20, param->notify.value, param->notify.value_len);
         // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19
-        this->decode_(this->composite_notfiy_value_, 36);
+        this->decode(this->composite_notfiy_value_, 36);
         this->incomplete_notify_value_received_ = false;
         this->composite_notfiy_value_[0] = 0x00;
         break;
       }
 
-      this->decode_(param->notify.value, param->notify.value_len);
+      this->decode(param->notify.value, param->notify.value_len);
 
       break;
     }
@@ -126,7 +126,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 // FF5501030001CD00007F003CC80000554E0009000A00000047300D3C000000000000008F
 // FF5501030001FB000001006C3F00006C4400070006001A00471C1A3C0000000000000078
 // https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-meter-usb.spec.ts
-void AtorchDL24::decode_(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   if (this->check_crc_ && crc(data, length - 1) != data[35]) {
     ESP_LOGW(TAG, "CRC check failed. Skipping frame.");
     return;
