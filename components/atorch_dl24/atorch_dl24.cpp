@@ -215,14 +215,16 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);
 
-  // 0x00 0x00 0x00:       Price per kWh          value * 0.01
-  this->publish_state_(this->price_per_kwh_sensor_, dl24_get_24bit(17) * 0.01f);
+  if (data[3] == DEVICE_TYPE_AC_METER) {
+    // 0x00 0x00 0x00:       Price per kWh          value * 0.01
+    this->publish_state_(this->price_per_kwh_sensor_, dl24_get_24bit(17) * 0.01f);
 
-  // 0x00 0x00:            Frequency              value * 0.1 Hz
-  this->publish_state_(this->frequency_sensor_, dl24_get_16bit(20) * 0.1f);
+    // 0x00 0x00:            Frequency              value * 0.1 Hz
+    this->publish_state_(this->frequency_sensor_, dl24_get_16bit(20) * 0.1f);
 
-  // 0x00 0x00:            Power factor           value * 0.001
-  this->publish_state_(this->power_factor_sensor_, dl24_get_16bit(22) * 0.001f);
+    // 0x00 0x00:            Power factor           value * 0.001
+    this->publish_state_(this->power_factor_sensor_, dl24_get_16bit(22) * 0.001f);
+  }
 
   // 0x00 0x25:            Temperature            37 °C
   this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
