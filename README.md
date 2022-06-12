@@ -6,7 +6,7 @@
 ![GitHub watchers](https://img.shields.io/github/watchers/syssi/esphome-atorch-dl24)
 [!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
 
-ESPHome component to monitor a Atorch DL24 dummy load via bluetooth
+ESPHome component to monitor some Atorch devices via bluetooth
 
 ![Lovelace entities card](lovelace-entities-card.png "Lovelace entities card")
 
