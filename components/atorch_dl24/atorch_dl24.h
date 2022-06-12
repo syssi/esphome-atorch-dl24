@@ -54,6 +54,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
  protected:
   void decode_ac_and_dc_(const uint8_t *data, uint16_t length);
   void decode_usb_(const uint8_t *data, uint16_t length);
+  void publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state);
   void publish_state_(sensor::Sensor *sensor, float value);
   void publish_state_(text_sensor::TextSensor *text_sensor, const std::string &state);
 
