@@ -4,6 +4,7 @@
 #include "esphome/components/ble_client/ble_client.h"
 #include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/text_sensor/text_sensor.h"
 
 #ifdef USE_ESP32
 
@@ -38,6 +39,10 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_power_factor_sensor(sensor::Sensor *power_factor_sensor) { power_factor_sensor_ = power_factor_sensor; }
   void set_runtime_sensor(sensor::Sensor *runtime_sensor) { runtime_sensor_ = runtime_sensor; }
 
+  void set_runtime_formatted_text_sensor(text_sensor::TextSensor *runtime_formatted_text_sensor) {
+    runtime_formatted_text_sensor_ = runtime_formatted_text_sensor;
+  }
+
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
   void decode(const uint8_t *data, uint16_t length);
 
@@ -45,6 +50,20 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void decode_ac_and_dc_(const uint8_t *data, uint16_t length);
   void decode_usb_(const uint8_t *data, uint16_t length);
   void publish_state_(sensor::Sensor *sensor, float value);
+  std::string format_runtime_(const uint32_t value) {
+    int seconds = (int) value;
+    int years = seconds / (24 * 3600 * 365);
+    seconds = seconds % (24 * 3600 * 365);
+    int days = seconds / (24 * 3600);
+    seconds = seconds % (24 * 3600);
+    int hours = seconds / 3600;
+    seconds = seconds % 3600;
+    int minutes = seconds / 60;
+    seconds = seconds % 60;
+    return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
+           (hours ? to_string(hours) + "h" : "") + (minutes ? to_string(days) + "m " : "") +
+           (seconds ? to_string(days) + "s " : "");
+  }
 
   uint16_t char_handle_;
   sensor::Sensor *voltage_sensor_{nullptr};
@@ -61,6 +80,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *frequency_sensor_{nullptr};
   sensor::Sensor *power_factor_sensor_{nullptr};
   sensor::Sensor *runtime_sensor_{nullptr};
+
+  text_sensor::TextSensor *total_runtime_formatted_text_sensor_;
 
   bool check_crc_;
   bool incomplete_notify_value_received_ = false;

@@ -33,16 +33,16 @@ esp32_ble_tracker:
 
 ble_client:
   - mac_address: ${dl24_mac_address}
-    id: dummyload0
+    id: ble_client0
 
 atorch_dl24:
-  - id: dl24
-    ble_client_id: dummyload0
+  - id: atorch0
+    ble_client_id: ble_client0
     check_crc: true
 
 sensor:
   - platform: atorch_dl24
-    atorch_dl24_id: dl24
+    atorch_dl24_id: atorch0
     voltage:
       name: "${name} voltage"
     current:
@@ -67,3 +67,9 @@ sensor:
       name: "${name} price per kwh"
     runtime:
       name: "${name} runtime"
+
+text_sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    runtime_formatted:
+      name: "${name} runtime formatted"
