@@ -16,7 +16,7 @@ ESPHome component to monitor some Atorch devices via bluetooth
 * Atorch DL24
 * Atorch DL24P
 
-## Untested devices using the same protocol
+## Supported but untested devices
 
 * Atorch AT24
 * Atorch AT3010
@@ -28,7 +28,7 @@ ESPHome component to monitor some Atorch devices via bluetooth
 * Atorch J7-C
 * Atorch J7-H
 
-## Unsupported devices
+## Unsupported devices because of a different protocol
 
 * Atorch Q7-T
 * Atorch A3-B
@@ -36,7 +36,7 @@ ESPHome component to monitor some Atorch devices via bluetooth
 
 ## Requirements
 
-* [ESPHome 2021.10.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2022.4.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 (f.e. ESP32 NodeMCU or D1 Mini ESP32)
 
 ## Installation
