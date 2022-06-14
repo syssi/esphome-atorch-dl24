@@ -50,6 +50,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
 
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
   void decode(const uint8_t *data, uint16_t length);
+  bool write_register(uint8_t device_type, uint8_t address, uint32_t value);
+  uint8_t get_device_type() { return this->device_type_; }
 
  protected:
   void decode_ac_and_dc_(const uint8_t *data, uint16_t length);
@@ -97,7 +99,9 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
 
   uint8_t previous_value_ = 61;
   uint8_t composite_notfiy_value_[36];
-  uint16_t char_handle_;
+  uint8_t device_type_ = 0x00;
+  uint16_t char_notify_handle_;
+  uint16_t char_command_handle_;
 };
 
 }  // namespace atorch_dl24
