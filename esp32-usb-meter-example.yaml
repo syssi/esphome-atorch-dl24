@@ -1,5 +1,5 @@
 substitutions:
-  name: atorch-dl24
+  name: atorch-usb-meter
   external_components_source: github://syssi/esphome-atorch-dl24@main
   dl24_mac_address: !secret dl24_mac_address
 
