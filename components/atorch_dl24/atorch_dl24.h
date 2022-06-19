@@ -23,6 +23,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
+  void set_throttle(uint32_t throttle) { this->throttle_ = throttle; }
+
   void set_running_binary_sensor(binary_sensor::BinarySensor *running_binary_sensor) {
     running_binary_sensor_ = running_binary_sensor;
   }
@@ -102,6 +104,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   uint8_t device_type_ = 0x00;
   uint16_t char_notify_handle_;
   uint16_t char_command_handle_;
+  uint32_t last_publish_{0};
+  uint32_t throttle_{0};
 };
 
 }  // namespace atorch_dl24

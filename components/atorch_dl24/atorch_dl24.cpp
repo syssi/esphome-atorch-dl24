@@ -244,6 +244,13 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
     return;
   }
 
+  const uint32_t now = millis();
+  if (now - this->last_publish_ < this->throttle_) {
+    ESP_LOGD(TAG, "Status report received and skipped because of throttling");
+    return;
+  }
+  this->last_publish_ = now;
+
   ESP_LOGI(TAG, "Status report received");
 
   uint8_t device_type = data[3];
