@@ -17,7 +17,6 @@ AtorchDL24 = atorch_dl24_ns.class_("AtorchDL24", ble_client.BLEClientNode, cg.Co
 ATORCH_DL24_COMPONENT_SCHEMA = cv.Schema(
     {
         cv.GenerateID(CONF_ATORCH_DL24_ID): cv.use_id(AtorchDL24),
-        cv.Optional(CONF_THROTTLE, default="0s"): cv.positive_time_period_milliseconds,
     }
 )
 
@@ -25,6 +24,7 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AtorchDL24),
         cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
+        cv.Optional(CONF_THROTTLE, default="0s"): cv.positive_time_period_milliseconds,
     }
 ).extend(ble_client.BLE_CLIENT_SCHEMA)
 
