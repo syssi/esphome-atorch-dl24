@@ -45,7 +45,7 @@ atorch_dl24:
   - id: atorch0
     ble_client_id: ble_client0
     check_crc: true
-    throttle: 5s
+    throttle: 0s
 
 binary_sensor:
   - platform: atorch_dl24
