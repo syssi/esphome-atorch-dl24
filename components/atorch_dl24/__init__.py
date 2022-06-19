@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import ble_client
 import esphome.config_validation as cv
-from esphome.const import CONF_ID
+from esphome.const import CONF_ID, CONF_THROTTLE
 
 AUTO_LOAD = ["binary_sensor", "button", "sensor", "text_sensor"]
 CODEOWNERS = ["@syssi"]
@@ -24,6 +24,7 @@ CONFIG_SCHEMA = cv.Schema(
     {
         cv.GenerateID(): cv.declare_id(AtorchDL24),
         cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
+        cv.Optional(CONF_THROTTLE, default="0s"): cv.positive_time_period_milliseconds,
     }
 ).extend(ble_client.BLE_CLIENT_SCHEMA)
 
@@ -34,3 +35,4 @@ async def to_code(config):
     await ble_client.register_ble_node(var, config)
 
     cg.add(var.set_check_crc(config[CONF_CHECK_CRC]))
+    cg.add(var.set_throttle(config[CONF_THROTTLE]))
