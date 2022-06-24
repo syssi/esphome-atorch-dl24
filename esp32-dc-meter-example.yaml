@@ -83,6 +83,14 @@ text_sensor:
     runtime_formatted:
       name: "${name} runtime formatted"
 
+# If you use `mqtt` you can control a button if you publish the message "PRESS". The topic depends on
+# the name of your ESPHome node and the name of the button entity:
+#
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_energy/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_capacity/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_runtime/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_all/command' -m 'PRESS'
+# ...
 button:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
