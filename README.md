@@ -36,7 +36,7 @@ ESPHome component to monitor and control some Atorch meters via bluetooth
 
 ## Requirements
 
-* [ESPHome 2022.4.0 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2022.10.0 or higher](https://github.com/esphome/esphome/releases).
 * Generic ESP32 (f.e. ESP32 NodeMCU or D1 Mini ESP32)
 
 ## Installation
