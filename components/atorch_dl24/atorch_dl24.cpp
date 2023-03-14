@@ -208,7 +208,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   uint8_t computed_crc = crc(data, length - 1);
   uint8_t remote_crc = data[length - 1];
   if (this->check_crc_ && computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "CRC check failed (%02X != %02X). Skipping frame", computed_crc, remote_crc);
+    ESP_LOGW(TAG, "CRC check failed (0x%02X != 0x%02X). Skipping frame", computed_crc, remote_crc);
     ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
     return;
   }
@@ -236,12 +236,12 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
       return;
     }
 
-    ESP_LOGW(TAG, "Unsupported reply: %02X %02X", data[3], data[4]);
+    ESP_LOGW(TAG, "Unsupported reply: 0x%02X 0x%02X", data[3], data[4]);
     return;
   }
 
   if (data[2] != MESSAGE_TYPE_REPORT) {
-    ESP_LOGW(TAG, "Unsupported message type (%02X)", data[2]);
+    ESP_LOGW(TAG, "Unsupported message type (0x%02X)", data[2]);
     return;
   }
 
@@ -268,7 +268,7 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
       this->decode_usb_(data, length);
       break;
     default:
-      ESP_LOGW(TAG, "Unsupported device type (%02X)", device_type);
+      ESP_LOGW(TAG, "Unsupported device type (0x%02X)", device_type);
   }
 }
 
