@@ -91,7 +91,7 @@ Device broadcast name: `UD18-BLE`, `AT24-BLE`, etc `*-BLE`
 > [packet-meter-usb.spec.ts](../src/service/atorch-packet/packet-meter-usb.spec.ts)
 
 | Offset | Field       | Block size | Note                                |
-| -----: | ----------- | ---------- | ----------------------------------- |
+| -----: | ----------- |------------|-------------------------------------|
 |   `03` | Device Type | 1 byte     | `03` [Device Type](#type-indicator) |
 |   `04` | Voltage     | 3 byte     | 24 bit BE (divide by 100)           |
 |   `07` | Amp         | 3 byte     | 24 bit BE (divide by 100)           |
@@ -99,7 +99,7 @@ Device broadcast name: `UD18-BLE`, `AT24-BLE`, etc `*-BLE`
 |   `0D` | W·h         | 4 byte     | 32 bit BE (divide by 100)           |
 |   `11` | USB D-      | 2 byte     | 16 bit BE (divide by 100)           |
 |   `13` | USB D+      | 2 byte     | 16 bit BE (divide by 100)           |
-|   `15` | Temperature | 3 byte     | 24 bit BE                           |
+|   `15` | Temperature | 2 byte     | 16 bit BE                           |
 |   `17` | Hour        | 2 byte     | 16 bit BE                           |
 |   `19` | Minute      | 1 byte     |                                     |
 |   `1A` | Second      | 1 byte     |                                     |
