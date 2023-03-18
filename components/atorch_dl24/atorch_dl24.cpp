@@ -295,7 +295,8 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   //
   // Byte Len Payload              Description
   //  0    2  0xFF 0x55            Magic header
-  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
+  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte),
+  //                                                      0x11: Command (6 byte)
   //  3    1  0x02                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
   //  4    3  0x00 0x00 0x20       Voltage                32 * 0.1 = 3.2 V
   float voltage = dl24_get_24bit(4) * 0.1f;
@@ -370,7 +371,8 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   //
   // Byte Len Payload              Description
   //  0    2  0xFF 0x55            Magic header
-  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
+  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte),
+  //                                                      0x11: Command (6 byte)
   //  3    1  0x03                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
   //  4    3  0x00 0x01 0xF3       Voltage                499 * 0.01 = 4.99 V
   float voltage = dl24_get_24bit(4) * 0.01f;
