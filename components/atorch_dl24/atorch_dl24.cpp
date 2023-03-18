@@ -291,42 +291,45 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // FF.55.01.02.00.00.20.00.4E.20.00.13.FC.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1D.3C.00.00.00.00.16
   // FF.55.01.02.00.00.20.00.4E.1B.00.13.FC.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1E.3C.00.00.00.00.0A
   // FF.55.01.02.00.00.20.00.4E.23.00.13.FD.00.00.00.11.00.00.00.00.00.00.00.00.25.00.02.21.1F.3C.00.00.00.00.1C
+  //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35
   //
-  // 0xFF 0x55:            Magic header
-  // 0x01:                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
-  // 0x02:                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
-  // 0x00 0x00 0x20:       Voltage                32 * 0.1 = 3.2 V
+  // Byte Len Payload              Description
+  //  0    2  0xFF 0x55            Magic header
+  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte),
+  //                                                      0x11: Command (6 byte)
+  //  3    1  0x02                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
+  //  4    3  0x00 0x00 0x20       Voltage                32 * 0.1 = 3.2 V
   float voltage = dl24_get_24bit(4) * 0.1f;
   this->publish_state_(this->voltage_sensor_, voltage);
 
-  // 0x00 0x4E 0x23:       Current                20003 * 0.001 = 20.003 A
+  //  7    3  0x00 0x4E 0x23       Current                20003 * 0.001 = 20.003 A
   float current = dl24_get_24bit(7) * 0.001f;
   this->publish_state_(this->current_sensor_, current);
   this->publish_state_(this->power_sensor_, voltage * current);
 
-  // 0x00 0x13 0xFD:       Capacity in Ah        5117 * 0.01 = 51.17 Ah
+  // 10    3  0x00 0x13 0xFD       Capacity in Ah        5117 * 0.01 = 51.17 Ah
   this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.01f);
 
-  // 0x00 0x00 0x00 0x11:  Energy in Wh           17 * 10.0 = 170.0
+  // 13    4  0x00 0x00 0x00 0x11  Energy in Wh           17 * 10.0 = 170.0
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 10.0f);
 
   if (data[3] == DEVICE_TYPE_AC_METER) {
-    // 0x00 0x00 0x00:       Price per kWh          value * 0.01
+    // 17    3  0x00 0x00 0x00       Price per kWh          value * 0.01
     this->publish_state_(this->price_per_kwh_sensor_, dl24_get_24bit(17) * 0.01f);
 
-    // 0x00 0x00:            Frequency              value * 0.1 Hz
+    // 20    2  0x00 0x00            Frequency              value * 0.1 Hz
     this->publish_state_(this->frequency_sensor_, dl24_get_16bit(20) * 0.1f);
 
-    // 0x00 0x00:            Power factor           value * 0.001
+    // 22    2  0x00 0x00            Power factor           value * 0.001
     this->publish_state_(this->power_factor_sensor_, dl24_get_16bit(22) * 0.001f);
   }
 
-  // 0x00 0x25:            Temperature            37 °C
+  // 24    2  0x00 0x25            Temperature            37 °C
   this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(24));
 
-  // 0x00 0x02:            Hour                   2 h
-  // 0x21:                 Minute                 33 min
-  // 0x1F:                 Second                 31 sec
+  // 26    2  0x00 0x02            Hour                   2 h
+  // 28    1  0x21                 Minute                 33 min
+  // 29    1  0x1F                 Second                 31 sec
   uint32_t runtime = (dl24_get_16bit(26) * 3600) + (data[28] * 60) + data[29];
   this->publish_state_(this->runtime_sensor_, (float) runtime);
   if (this->runtime_formatted_text_sensor_ != nullptr) {
@@ -340,11 +343,11 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   }
   previous_value_ = data[29];
 
-  // 0x3C:                 Dim backlight          60 seconds
+  // 30    1  0x3C                 Dim backlight          60 seconds
   this->publish_state_(this->dim_backlight_sensor_, (float) data[30]);
 
-  // 0x00 0x00 0x00 0x00:  Unknown
-  // 0x1C:                 Checksum
+  // 31    4  0x00 0x00 0x00 0x00  Unknown
+  // 35    1  0x1C                 Checksum
 }
 
 void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
@@ -364,37 +367,40 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   // FF.55.01.03.00.01.FB.00.00.00.00.3C.C7.00.00.55.4E.00.07.00.07.00.00.00.47.2F.24.3C.00.00.00.00.00.00.00.CE
   // FF.55.01.03.00.01.CD.00.00.7F.00.3C.C8.00.00.55.4E.00.09.00.0A.00.00.00.47.30.0D.3C.00.00.00.00.00.00.00.8F
   // FF.55.01.03.00.01.FB.00.00.01.00.6C.3F.00.00.6C.44.00.07.00.06.00.1A.00.47.1C.1A.3C.00.00.00.00.00.00.00.78
+  //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35
   //
-  // 0xFF 0x55:            Magic header
-  // 0x01:                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte), 0x11: Command (6 byte)
-  // 0x03:                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
-  // 0x00 0x01 0xF3:       Voltage                499 * 0.01 = 4.99 V
+  // Byte Len Payload              Description
+  //  0    2  0xFF 0x55            Magic header
+  //  2    1  0x01                 Message type           0x01: Report (32 byte), 0x02: Reply (4 byte),
+  //                                                      0x11: Command (6 byte)
+  //  3    1  0x03                 Device type            0x01: AC meter, 0x02: DC meter, 0x03: USB meter
+  //  4    3  0x00 0x01 0xF3       Voltage                499 * 0.01 = 4.99 V
   float voltage = dl24_get_24bit(4) * 0.01f;
   this->publish_state_(this->voltage_sensor_, voltage);
 
-  // 0x00 0x00 0x00:       Current                0 * 0.01 = 0.00 A
+  //  7    3  0x00 0x00 0x00       Current                0 * 0.01 = 0.00 A
   float current = dl24_get_24bit(7) * 0.01f;
   this->publish_state_(this->current_sensor_, current);
   this->publish_state_(this->power_sensor_, voltage * current);
 
-  // 0x00 0x06 0x38:       Capacity in Ah         1592 * 0.001 = 1.592 Ah
+  // 10    3  0x00 0x06 0x38       Capacity in Ah         1592 * 0.001 = 1.592 Ah
   this->publish_state_(this->capacity_sensor_, dl24_get_24bit(10) * 0.001f);
 
-  // 0x00 0x00 0x03 0x11:  Energy in Wh           785 * 0.01 = 7.85 Wh
+  // 13    4  0x00 0x00 0x03 0x11  Energy in Wh           785 * 0.01 = 7.85 Wh
   this->publish_state_(this->energy_sensor_, dl24_get_32bit(13) * 0.01f);
 
-  // 0x00 0x07:            USB D-                 7 * 0.01 = 0,07 V
+  // 17    2  0x00 0x07            USB D-                 7 * 0.01 = 0,07 V
   this->publish_state_(this->usb_data_minus_sensor_, (float) dl24_get_16bit(17) * 0.01f);
 
-  // 0x00 0x0A:            USB D+                 10 * 0.01 = 0,10 V
+  // 19    2  0x00 0x0A            USB D+                 10 * 0.01 = 0,10 V
   this->publish_state_(this->usb_data_plus_sensor_, (float) dl24_get_16bit(19) * 0.01f);
 
-  // 0x00 0x00 0x00:       Temperature
-  this->publish_state_(this->temperature_sensor_, (float) dl24_get_24bit(21));
+  // 21    2  0x00 0x00            Temperature
+  this->publish_state_(this->temperature_sensor_, (float) dl24_get_16bit(21));
 
-  // 0x12 0x2E:            Hour                   4654 h
-  // 0x33:                 Minute                 51 min
-  // 0x3C:                 Second                 60 sec
+  // 23    2  0x00 0x12            Hour                   18 h
+  // 25    1  0x2E                 Minute                 46 min
+  // 26    1  0x33                 Second                 51 sec
   uint32_t runtime = (dl24_get_16bit(23) * 3600) + (data[25] * 60) + data[26];
   this->publish_state_(this->runtime_sensor_, (float) runtime);
   if (this->runtime_formatted_text_sensor_ != nullptr) {
@@ -408,11 +414,11 @@ void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
   }
   previous_value_ = data[26];
 
-  // 0x00:                 Backlight
+  // 27    1  0x3C                 Backlight
   this->publish_state_(this->dim_backlight_sensor_, (float) data[27]);
 
-  // 0x00 0x00 0x00 0x00 0x00 0x00: Unknown
-  // 0x4E:                 Checksum
+  // 28    7  0x00 0x00 0x00 0x00 0x00 0x00 0x00  Unknown
+  // 35    1  0x4E                 Checksum
 }
 
 void AtorchDL24::publish_state_(binary_sensor::BinarySensor *binary_sensor, const bool &state) {

@@ -1,0 +1,19 @@
+<<: !include esp32-atorch-j7-c.yaml
+
+atorch_dl24:
+  - id: atorch0
+    ble_client_id: ble_client0
+    check_crc: false
+    # The meter publishes a status report per second via BLE notification. If you don't like this update interval
+    # you can use this setting to throttle the sensor updates by skipping some status reports.
+    throttle: 0s
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          const uint8_t frame[36] = {
+            0xFF, 0x55, 0x01, 0x03, 0x00, 0x07, 0xEF, 0x00, 0x00, 0x23, 0x00, 0x01, 0x5A, 0x00, 0x00, 0x02, 0xBF, 0x00,
+            0x09, 0x00, 0x09, 0x00, 0x1F, 0x00, 0x00, 0x26, 0x00, 0x3C, 0x0D, 0xAC, 0x01, 0x22, 0x03, 0x20, 0x00, 0x0D
+          };
+          id(atorch0).decode(frame, sizeof(frame));
