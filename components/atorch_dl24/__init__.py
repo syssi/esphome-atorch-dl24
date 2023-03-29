@@ -3,12 +3,12 @@ from esphome.components import ble_client
 import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE
 
-AUTO_LOAD = ["binary_sensor", "button", "sensor", "text_sensor"]
 CODEOWNERS = ["@syssi"]
+
+AUTO_LOAD = ["binary_sensor", "button", "sensor", "text_sensor"]
 MULTI_CONF = True
 
 CONF_ATORCH_DL24_ID = "atorch_dl24_id"
-
 CONF_CHECK_CRC = "check_crc"
 
 atorch_dl24_ns = cg.esphome_ns.namespace("atorch_dl24")
