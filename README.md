@@ -22,13 +22,13 @@ ESPHome component to monitor and control some Atorch meters via bluetooth
       ble_client_id: ble_client0
       check_crc: false
   ```
+* Atorch DT3010
 
 ## Supported but untested devices
 
 * Atorch AT24
 * Atorch AT3010
 * Atorch DT24
-* Atorch DT3010
 * Atorch UD18
 * Atorch UD18-L
 * Atorch T18
