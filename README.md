@@ -29,6 +29,7 @@ ESPHome component to monitor and control some Atorch meters via bluetooth
 * Atorch AT24
 * Atorch AT3010
 * Atorch DT24
+* Atorch DT24PW (requires a disabled CRC check)
 * Atorch UD18
 * Atorch UD18-L
 * Atorch T18
