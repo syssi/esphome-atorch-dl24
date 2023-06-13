@@ -41,7 +41,6 @@ DEPENDENCIES = ["atorch_dl24"]
 CODEOWNERS = ["@syssi"]
 
 CONF_DIM_BACKLIGHT = "dim_backlight"
-CONF_RUNNING = "running"
 
 CONF_USB_DATA_MINUS = "usb_data_minus"
 CONF_USB_DATA_PLUS = "usb_data_plus"
@@ -51,7 +50,6 @@ CONF_RUNTIME = "runtime"
 
 UNIT_AMPERE_HOURS = "Ah"
 ICON_CAPACITY = "mdi:battery-medium"
-ICON_RUNNING = "mdi:power"
 
 SENSORS = [
     CONF_VOLTAGE,
@@ -61,7 +59,6 @@ SENSORS = [
     CONF_ENERGY,
     CONF_TEMPERATURE,
     CONF_DIM_BACKLIGHT,
-    CONF_RUNNING,
     CONF_USB_DATA_MINUS,
     CONF_USB_DATA_PLUS,
     CONF_PRICE_PER_KWH,
@@ -119,13 +116,6 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_DIM_BACKLIGHT): sensor.sensor_schema(
             unit_of_measurement=UNIT_SECOND,
             icon=ICON_TIMER,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_RUNNING): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_RUNNING,
             accuracy_decimals=0,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_MEASUREMENT,

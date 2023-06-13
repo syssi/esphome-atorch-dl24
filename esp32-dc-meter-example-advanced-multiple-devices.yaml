@@ -5,7 +5,7 @@ substitutions:
   external_components_source: github://syssi/esphome-atorch-dl24@main
   dl24_mac_address0: !secret dl24_mac_address0
   dl24_mac_address1: !secret dl24_mac_address1
-  project_version: 1.3.0
+  project_version: 2.0.0
   device_description: "Monitor and control two Atorch meters via bluetooth"
 
 esphome:
@@ -94,8 +94,6 @@ sensor:
       name: "${device0} temperature"
     dim_backlight:
       name: "${device0} dim backlight"
-    running:
-      name: "${device0} running"
     runtime:
       name: "${device0} runtime"
 
@@ -115,8 +113,6 @@ sensor:
       name: "${device1} temperature"
     dim_backlight:
       name: "${device1} dim backlight"
-    running:
-      name: "${device1} running"
     runtime:
       name: "${device1} runtime"
 
