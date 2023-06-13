@@ -1,9 +1,8 @@
-# frame_type: 0x02 (DEVICE_TYPE_DC_METER)
-# frequency, power_factor and price per kwh aren't available
-# buttons: untested
+# Property runtime isn't available: 0x00
+# Buttons / write operations are untested
 
 substitutions:
-  name: atorch-ac-meter
+  name: atorch-dc-meter
   external_components_source: github://syssi/esphome-atorch-dl24@main
   dl24_mac_address: !secret dl24_mac_address
   project_version: 1.3.0
@@ -58,12 +57,6 @@ atorch_dl24:
     # you can use this setting to throttle the sensor updates by skipping some status reports.
     throttle: 0s
 
-binary_sensor:
-  - platform: atorch_dl24
-    atorch_dl24_id: atorch0
-    running:
-      name: "${name} running"
-
 sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
@@ -81,8 +74,6 @@ sensor:
       name: "${name} temperature"
     dim_backlight:
       name: "${name} dim backlight"
-    runtime:
-      name: "${name} runtime"
 
 text_sensor:
   - platform: atorch_dl24
@@ -93,10 +84,10 @@ text_sensor:
 # If you use `mqtt` you can control a button if you publish the message "PRESS". The topic depends on
 # the name of your ESPHome node and the name of the button entity:
 #
-# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_energy/command' -m 'PRESS'
-# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_capacity/command' -m 'PRESS'
-# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_runtime/command' -m 'PRESS'
-# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_all/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_energy/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_capacity/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_runtime/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-dc-meter/button/atorch-dc-meter_reset_all/command' -m 'PRESS'
 # ...
 button:
   - platform: atorch_dl24
