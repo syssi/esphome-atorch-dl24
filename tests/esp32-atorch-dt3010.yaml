@@ -1,0 +1,121 @@
+substitutions:
+  name: atorch-ac-meter
+  external_components_source: github://syssi/esphome-atorch-dl24@main
+  dl24_mac_address: !secret dl24_mac_address
+  project_version: 1.3.0
+  device_description: "Monitor and control a Atorch meter via bluetooth"
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  project:
+    name: "syssi.esphome-atorch-dl24"
+    version: ${project_version}
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+external_components:
+  - source: ${external_components_source}
+    refresh: 0s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+
+logger:
+  level: DEBUG
+
+# If you use Home Assistant please remove this `mqtt` section and uncomment the `api` component!
+# The native API has many advantages over MQTT: https://esphome.io/components/api.html#advantages-over-mqtt
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  id: mqtt_client
+
+# api:
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${dl24_mac_address}
+    id: ble_client0
+
+atorch_dl24:
+  - id: atorch0
+    ble_client_id: ble_client0
+    check_crc: true
+    # The meter publishes a status report per second via BLE notification. If you don't like this update interval
+    # you can use this setting to throttle the sensor updates by skipping some status reports.
+    throttle: 0s
+
+binary_sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    running:
+      name: "${name} running"
+
+sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    voltage:
+      name: "${name} voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    capacity:
+      name: "${name} capacity"
+    energy:
+      name: "${name} energy"
+    temperature:
+      name: "${name} temperature"
+    dim_backlight:
+      name: "${name} dim backlight"
+    frequency:
+      name: "${name} frequency"
+    power_factor:
+      name: "${name} power_factor"
+    price_per_kwh:
+      name: "${name} price per kwh"
+    runtime:
+      name: "${name} runtime"
+
+text_sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    runtime_formatted:
+      name: "${name} runtime formatted"
+
+# If you use `mqtt` you can control a button if you publish the message "PRESS". The topic depends on
+# the name of your ESPHome node and the name of the button entity:
+#
+# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_energy/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_capacity/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_runtime/command' -m 'PRESS'
+# mosquitto_pub -t 'atorch-ac-meter/button/atorch-ac-meter_reset_all/command' -m 'PRESS'
+# ...
+button:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    reset_energy:
+      name: "${name} reset energy"
+    reset_capacity:
+      name: "${name} reset capacity"
+    reset_runtime:
+      name: "${name} reset runtime"
+    reset_all:
+      name: "${name} reset all"
+    plus:
+      name: "${name} plus"
+    minus:
+      name: "${name} minus"
+    setup:
+      name: "${name} setup"
+    enter:
+      name: "${name} enter"
