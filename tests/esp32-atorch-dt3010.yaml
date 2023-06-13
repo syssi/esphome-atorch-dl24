@@ -1,3 +1,7 @@
+# frame_type: 0x02 (DEVICE_TYPE_DC_METER)
+# frequency, power_factor and price per kwh aren't available
+# buttons: untested
+
 substitutions:
   name: atorch-ac-meter
   external_components_source: github://syssi/esphome-atorch-dl24@main
@@ -77,12 +81,6 @@ sensor:
       name: "${name} temperature"
     dim_backlight:
       name: "${name} dim backlight"
-    frequency:
-      name: "${name} frequency"
-    power_factor:
-      name: "${name} power_factor"
-    price_per_kwh:
-      name: "${name} price per kwh"
     runtime:
       name: "${name} runtime"
 
