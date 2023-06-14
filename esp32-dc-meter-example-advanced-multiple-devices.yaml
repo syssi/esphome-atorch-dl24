@@ -57,14 +57,14 @@ atorch_dl24:
     check_crc: true
     # The meter publishes a status report per second via BLE notification. If you don't like this update interval
     # you can use this setting to throttle the sensor updates by skipping some status reports.
-    throttle: 0s
+    throttle: 2s
 
   - id: atorch1
     ble_client_id: ble_client1
     check_crc: true
     # The meter publishes a status report per second via BLE notification. If you don't like this update interval
     # you can use this setting to throttle the sensor updates by skipping some status reports.
-    throttle: 0s
+    throttle: 2s
 
 binary_sensor:
   - platform: atorch_dl24
