@@ -15,6 +15,13 @@ ESPHome component to monitor and control some Atorch meters via bluetooth
 
 * Atorch DL24
 * Atorch DL24P
+* Atorch DL24M requires a disabled CRC check (see https://github.com/syssi/esphome-atorch-dl24/issues/59)
+  ```
+  atorch_dl24:
+    - id: atorch0
+      ble_client_id: ble_client0
+      check_crc: false
+  ```
 * Atorch J7-C requires a disabled CRC check
   ```
   atorch_dl24:
