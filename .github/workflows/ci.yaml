@@ -84,9 +84,6 @@ jobs:
         run: |
           echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
-      # Can be removed as soon as esphome-lint container is fixed
-      - name: Add missing pexpect
-        run: pip install pexpect
       - name: Run lint-cpp
         run: script/lint-cpp -c
         working-directory: ${{ env.esphome_directory }}
@@ -214,3 +211,4 @@ jobs:
           esphome -s external_components_source components compile esp32-dc-meter-example-faker.yaml
           esphome -s external_components_source components compile esp32-dc-meter-example-advanced-multiple-devices.yaml
           esphome -s external_components_source components compile esp32-usb-meter-example-faker.yaml
+
