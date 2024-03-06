@@ -49,7 +49,7 @@ ble_client:
 atorch_dl24:
   - id: atorch0
     ble_client_id: ble_client0
-    check_crc: true
+    check_crc: false
     # The meter publishes a status report per second via BLE notification. If you don't like this update interval
     # you can use this setting to throttle the sensor updates by skipping some status reports.
     throttle: 0s
