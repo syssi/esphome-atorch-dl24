@@ -1,0 +1,45 @@
+<<: !include esp32-atorch-s1.yaml
+
+atorch_dl24:
+  - id: atorch0
+    ble_client_id: ble_client0
+    check_crc: false
+    # The meter publishes a status report per second via BLE notification. If you don't like this update interval
+    # you can use this setting to throttle the sensor updates by skipping some status reports.
+    throttle: 0s
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          const uint8_t frame[36] = {
+            0xFF, 0x55, 0x01, 0x01, 0x00, 0x09, 0x06, 0x00, 0x00, 0x28, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xED, 0x00,
+            0x00, 0x64, 0x01, 0xF4, 0x00, 0x53, 0x00, 0x20, 0x00, 0x0E, 0x0D, 0x08, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x5F
+          };
+          id(atorch0).decode(frame, sizeof(frame));
+
+      - delay: 2s
+      - lambda: |-
+          const uint8_t frame[36] = {
+            0xFF, 0x55, 0x01, 0x01, 0x00, 0x09, 0x02, 0x00, 0x00, 0x28, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xED, 0x00,
+            0x00, 0x64, 0x01, 0xF4, 0x00, 0x4F, 0x00, 0x1E, 0x00, 0x0E, 0x0D, 0x09, 0x3C, 0x00, 0x00, 0x00, 0x00, 0xE9
+          };
+          id(atorch0).decode(frame, sizeof(frame));
+
+      - delay: 2s
+      - lambda: |-
+          const uint8_t frame[36] = {
+            0xFF, 0x55, 0x01, 0x01, 0x00, 0x09, 0x01, 0x00, 0x00, 0x28, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0xED, 0x00,
+            0x00, 0x64, 0x01, 0xF4, 0x00, 0x59, 0x00, 0x1F, 0x00, 0x0E, 0x0D, 0x0A, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x07
+          };
+          id(atorch0).decode(frame, sizeof(frame));
+
+# ff:55:01:01:00:08:fe:00:00:28:00:00:07:00:00:00:ed:00:00:64:01:f4:00:55:00:1f:00:0e:0d:0b:3c:00:00:00:00:1d
+# ff:55:01:01:00:09:02:00:00:28:00:00:08:00:00:00:ed:00:00:64:01:f4:00:58:00:20:00:0e:0d:0c:3c:00:00:00:00:3e
+# ff:55:01:01:00:09:04:00:00:28:00:00:07:00:00:00:ed:00:00:64:01:f4:00:53:00:20:00:0e:0d:0d:3c:00:00:00:00:dc
+# ff:55:01:01:00:09:0c:00:00:28:00:00:08:00:00:00:ed:00:00:64:01:f4:00:5b:00:20:00:0e:0d:0e:3c:00:00:00:00:0c
+# ff:55:01:01:00:09:07:00:00:28:00:00:08:00:00:00:ed:00:00:64:01:f4:00:5c:00:20:00:0e:0d:0f:3c:00:00:00:00:31
+# ff:55:01:01:00:09:05:00:00:28:00:00:08:00:00:00:ed:00:00:64:01:f4:00:5d:00:20:00:0e:0d:10:3c:00:00:00:00:de
+# ff:55:01:01:00:08:fc:00:00:28:00:00:08:00:00:00:ed:00:00:64:01:f4:00:60:00:1f:00:0e:0d:11:3c:00:00:00:00:04
+# ff:55:01:01:00:08:e8:00:00:28:00:00:07:00:00:00:ed:00:00:64:01:f4:00:53:00:20:00:0e:0d:12:3c:00:00:00:00:02
+# ff:55:01:01:00:08:e3:00:00:27:00:00:07:00:00:00:ed:00:00:64:01:f4:00:51:00:20:00:0e:0d:13:3c:00:00:00:00:79
