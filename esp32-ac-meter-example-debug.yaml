@@ -1,10 +1,17 @@
 <<: !include esp32-ac-meter-example.yaml
 
 logger:
-  baud_rate: 0
   level: VERY_VERBOSE
   logs:
-    api.service: WARN
-    ota: WARN
-    wifi: WARN
+    ota: INFO
+    wifi: INFO
+    scheduler: DEBUG
+    component: DEBUG
     sensor: DEBUG
+    mqtt: INFO
+    mqtt.idf: INFO
+    mqtt.component: INFO
+    mqtt.sensor: INFO
+    mqtt.switch: INFO
+    api.service: INFO
+    api: INFO
