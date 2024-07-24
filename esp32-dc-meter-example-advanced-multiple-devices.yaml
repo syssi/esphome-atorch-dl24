@@ -140,9 +140,9 @@ button:
       name: "${device0} reset runtime"
     reset_all:
       name: "${device0} reset all"
-    plus:
+    usb_plus:
       name: "${device0} plus"
-    minus:
+    usb_minus:
       name: "${device0} minus"
     setup:
       name: "${device0} setup"
@@ -159,9 +159,9 @@ button:
       name: "${device1} reset runtime"
     reset_all:
       name: "${device1} reset all"
-    plus:
+    usb_plus:
       name: "${device1} plus"
-    minus:
+    usb_minus:
       name: "${device1} minus"
     setup:
       name: "${device1} setup"
