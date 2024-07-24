@@ -107,9 +107,9 @@ button:
       name: "${name} reset runtime"
     reset_all:
       name: "${name} reset all"
-    plus:
+    usb_plus:
       name: "${name} plus"
-    minus:
+    usb_minus:
       name: "${name} minus"
     setup:
       name: "${name} setup"
