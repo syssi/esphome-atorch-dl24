@@ -194,10 +194,10 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: FF:FF:FF:FF:FF:FF\ndl24_mac_address0: FF:FF:FF:FF:FF:F0\ndl24_mac_address1: FF:FF:FF:FF:FF:F1\n" > tests/secrets.yaml'
       - run: |
-          for YAML in esp32-*.yaml; do
+          for YAML in esp*.yaml; do
             esphome -s external_components_source components config $YAML >/dev/null
           done
-          for YAML in tests/esp32-*.yaml; do
+          for YAML in tests/esp*.yaml; do
             esphome -s external_components_source ../components config $YAML >/dev/null
           done
 
