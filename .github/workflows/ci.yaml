@@ -8,6 +8,9 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 12 * * *
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
   yamllint:
     runs-on: ubuntu-latest
@@ -191,22 +194,12 @@ jobs:
         shell: bash
         run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: FF:FF:FF:FF:FF:FF\ndl24_mac_address0: FF:FF:FF:FF:FF:F0\ndl24_mac_address1: FF:FF:FF:FF:FF:F1\n" > tests/secrets.yaml'
       - run: |
-          esphome -s external_components_source components config esp32-ac-meter-example.yaml
-          esphome -s external_components_source components config esp32-ac-meter-example-debug.yaml
-          esphome -s external_components_source components config esp32-ac-meter-example-faker.yaml
-          esphome -s external_components_source components config esp32-dc-meter-example.yaml
-          esphome -s external_components_source components config esp32-dc-meter-example-debug.yaml
-          esphome -s external_components_source components config esp32-dc-meter-example-faker.yaml
-          esphome -s external_components_source components config esp32-dc-meter-example-advanced-multiple-devices.yaml
-          esphome -s external_components_source components config esp32-usb-meter-example.yaml
-          esphome -s external_components_source components config esp32-usb-meter-example-debug.yaml
-          esphome -s external_components_source components config esp32-usb-meter-example-faker.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-dt3010-faker.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-dt3010.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-j7-c-faker.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-j7-c.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-s1-faker.yaml
-          esphome -s external_components_source ../components config tests/esp32-atorch-s1.yaml
+          for YAML in esp*.yaml; do
+            esphome -s external_components_source components config $YAML >/dev/null
+          done
+          for YAML in tests/esp*.yaml; do
+            esphome -s external_components_source ../components config $YAML >/dev/null
+          done
 
   esphome-compile:
     runs-on: ubuntu-latest
