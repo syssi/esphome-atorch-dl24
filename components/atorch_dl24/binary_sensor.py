@@ -1,12 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import binary_sensor
 import esphome.config_validation as cv
-from esphome.const import (
-    CONF_ENTITY_CATEGORY,
-    CONF_ICON,
-    CONF_ID,
-    ENTITY_CATEGORY_DIAGNOSTIC,
-)
+from esphome.const import CONF_ID, ENTITY_CATEGORY_DIAGNOSTIC
 
 from . import ATORCH_DL24_COMPONENT_SCHEMA, CONF_ATORCH_DL24_ID
 
@@ -16,22 +11,15 @@ CODEOWNERS = ["@syssi"]
 
 CONF_RUNNING = "running"
 
-ICON_RUNNING = "mdi:power"
-
 BINARY_SENSORS = [
     CONF_RUNNING,
 ]
 
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_RUNNING): binary_sensor.BINARY_SENSOR_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(binary_sensor.BinarySensor),
-                cv.Optional(CONF_ICON, default=ICON_RUNNING): cv.icon,
-                cv.Optional(
-                    CONF_ENTITY_CATEGORY, default=ENTITY_CATEGORY_DIAGNOSTIC
-                ): cv.entity_category,
-            }
+        cv.Optional(CONF_RUNNING): binary_sensor.binary_sensor_schema(
+            icon="mdi:power",
+            entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
         ),
     }
 )
