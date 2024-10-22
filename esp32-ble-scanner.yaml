@@ -1,0 +1,52 @@
+substitutions:
+  name: ble-scanner
+  project_version: 2.1.0
+  device_description: "Search for BLE devices"
+
+esphome:
+  name: ${name}
+  comment: ${device_description}
+  min_version: 2024.6.0
+  project:
+    name: "syssi.esphome-atorch-dl24"
+    version: ${project_version}
+
+esp32:
+  board: wemos_d1_mini32
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+ota:
+  platform: esphome
+
+logger:
+  level: DEBUG
+  logs:
+    wifi: WARN
+
+api:
+  reboot_timeout: 0s
+
+esp32_ble_tracker:
+  scan_parameters:
+    active: true
+  on_ble_advertise:
+    then:
+      - lambda: |-
+          if (x.get_name().rfind("-BLE", 0) == 0) {
+            ESP_LOGI("ble_adv", "New Atorch device found");
+            ESP_LOGI("ble_adv", "  Name: %s", x.get_name().c_str());
+            ESP_LOGI("ble_adv", "  MAC address: %s", x.address_str().c_str());
+            ESP_LOGD("ble_adv", "  Advertised service UUIDs:");
+            for (auto uuid : x.get_service_uuids()) {
+              ESP_LOGD("ble_adv", "    - %s", uuid.to_string().c_str());
+            }
+          }
+
+text_sensor:
+  - platform: ble_scanner
+    name: "BLE Devices Scanner"
