@@ -99,7 +99,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   bool incomplete_notify_value_received_ = false;
 
   uint8_t previous_value_ = 61;
-  uint8_t composite_notfiy_value_[36];
+  uint8_t composite_notify_value_[36];
   uint8_t device_type_ = 0x00;
   uint16_t char_notify_handle_;
   uint16_t char_command_handle_;
