@@ -25,7 +25,6 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
 )
 
 
-
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_ATORCH_DL24_ID])
     for key in BINARY_SENSORS:
