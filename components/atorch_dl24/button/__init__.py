@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 from esphome.components import button
 import esphome.config_validation as cv
-from esphome.const import CONF_ICON, CONF_ID
+from esphome.const import CONF_ID
 
 from .. import ATORCH_DL24_COMPONENT_SCHEMA, CONF_ATORCH_DL24_ID, atorch_dl24_ns
 
@@ -59,65 +59,35 @@ AtorchButton = atorch_dl24_ns.class_("AtorchButton", button.Button, cg.Component
 
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_RESET_ENERGY): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_RESET): cv.icon,
-            }
+        cv.Optional(CONF_RESET_ENERGY): button.button_schema(
+            AtorchButton, icon=ICON_RESET
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RESET_CAPACITY): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_RESET): cv.icon,
-            }
+        cv.Optional(CONF_RESET_CAPACITY): button.button_schema(
+            AtorchButton, icon=ICON_RESET
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RESET_RUNTIME): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_RESET): cv.icon,
-            }
+        cv.Optional(CONF_RESET_RUNTIME): button.button_schema(
+            AtorchButton, icon=ICON_RESET
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_RESET_ALL): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_RESET): cv.icon,
-            }
+        cv.Optional(CONF_RESET_ALL): button.button_schema(
+            AtorchButton, icon=ICON_RESET
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_PLUS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_PLUS): cv.icon,
-            }
+        cv.Optional(CONF_PLUS): button.button_schema(
+            AtorchButton, icon=ICON_PLUS
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_MINUS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_MINUS): cv.icon,
-            }
+        cv.Optional(CONF_MINUS): button.button_schema(
+            AtorchButton, icon=ICON_MINUS
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_ENTER): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_ENTER): cv.icon,
-            }
+        cv.Optional(CONF_ENTER): button.button_schema(
+            AtorchButton, icon=ICON_ENTER
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_SETUP): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_SETUP): cv.icon,
-            }
+        cv.Optional(CONF_SETUP): button.button_schema(
+            AtorchButton, icon=ICON_SETUP
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_USB_PLUS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_USB_PLUS): cv.icon,
-            }
+        cv.Optional(CONF_USB_PLUS): button.button_schema(
+            AtorchButton, icon=ICON_USB_PLUS
         ).extend(cv.COMPONENT_SCHEMA),
-        cv.Optional(CONF_USB_MINUS): button.BUTTON_SCHEMA.extend(
-            {
-                cv.GenerateID(): cv.declare_id(AtorchButton),
-                cv.Optional(CONF_ICON, default=ICON_USB_MINUS): cv.icon,
-            }
+        cv.Optional(CONF_USB_MINUS): button.button_schema(
+            AtorchButton, icon=ICON_USB_MINUS
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
