@@ -423,7 +423,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: FF:FF:FF:FF:FF:FF\ndl24_mac_address0: FF:FF:FF:FF:FF:F0\ndl24_mac_address1: FF:FF:FF:FF:FF:F1\n" > secrets.yaml
           for YAML in esp*.yaml; do
-            esphome -s external_components_source components config $YAML >/dev/null
+            esphome -s external_components_source components config $YAML
           done
 
       - name: Validate test configurations
@@ -431,7 +431,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: FF:FF:FF:FF:FF:FF\ndl24_mac_address0: FF:FF:FF:FF:FF:F0\ndl24_mac_address1: FF:FF:FF:FF:FF:F1\n" > tests/secrets.yaml
           for YAML in tests/esp*.yaml; do
-            esphome -s external_components_source ../components config $YAML >/dev/null
+            esphome -s external_components_source ../components config $YAML
           done
 
   esphome-compile:
@@ -458,7 +458,7 @@ jobs:
           . venv/bin/activate
           echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\ndl24_mac_address: FF:FF:FF:FF:FF:FF\ndl24_mac_address0: FF:FF:FF:FF:FF:F0\ndl24_mac_address1: FF:FF:FF:FF:FF:F1\n" > secrets.yaml
           for YAML in esp*faker.yaml esp32-dc-meter-example-advanced-multiple-devices.yaml; do
-            esphome -s external_components_source components compile $YAML >/dev/null
+            esphome -s external_components_source components compile $YAML
           done
 
       - name: Compile test configurations
