@@ -2,7 +2,7 @@ substitutions:
   name: atorch-ac-meter
   external_components_source: github://syssi/esphome-atorch-dl24@main
   dl24_mac_address: !secret dl24_mac_address
-  project_version: 2.1.0
+  project_version: 2.2.0
   device_description: "Monitor and control a Atorch meter via bluetooth"
 
 esphome:

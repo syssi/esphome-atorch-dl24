@@ -1,6 +1,6 @@
 substitutions:
   name: ble-scanner
-  project_version: 2.1.0
+  project_version: 2.2.0
   device_description: "Search for BLE devices"
 
 esphome:
