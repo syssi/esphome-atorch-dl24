@@ -205,7 +205,7 @@ void AtorchDL24::assemble(const uint8_t *data, uint16_t length) {
 
   if (this->frame_buffer_.size() >= 4) {
     const uint8_t *raw = &this->frame_buffer_[0];
-    
+
     // Determine expected frame size based on message type
     uint16_t expected_frame_size = 0;
     if (this->frame_buffer_.size() >= 3) {
@@ -236,30 +236,19 @@ void AtorchDL24::assemble(const uint8_t *data, uint16_t length) {
         }
       }
 
-      this->decode(raw, expected_frame_size);
+      std::vector<uint8_t> frame_data(raw, raw + expected_frame_size);
+      this->decode(frame_data);
       this->frame_buffer_.clear();
     }
   }
 }
 
-void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode(const std::vector<uint8_t> &data) {
+  uint16_t length = data.size();
   // Accept valid received frame lengths: 36 (report), 8 (reply)
   if (length != 36 && length != 8) {
     ESP_LOGW(TAG, "Frame skipped because of invalid length (%u)", length);
-    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
-    return;
-  }
-
-  uint8_t computed_crc = crc(data, length - 1);
-  uint8_t remote_crc = data[length - 1];
-  if (this->check_crc_ && computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "CRC check failed (0x%02X != 0x%02X). Skipping frame", computed_crc, remote_crc);
-    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
-    return;
-  }
-
-  if (data[0] != START_OF_FRAME_BYTE1 && data[1] != START_OF_FRAME_BYTE2) {
-    ESP_LOGW(TAG, "Invalid header");
+    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data.data(), length).c_str());
     return;
   }
 
