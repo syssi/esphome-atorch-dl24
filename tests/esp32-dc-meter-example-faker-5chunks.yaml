@@ -41,7 +41,7 @@ interval:
       - lambda: |-
           // Chunk 5: Final data + checksum (5 bytes)
           const uint8_t chunk5[5] = {
-            0x3C, 0x00, 0x00, 0x00, 0x00, 0x09
+            0x3C, 0x00, 0x00, 0x00, 0x09
           };
           id(atorch0).assemble(chunk5, sizeof(chunk5));
 
