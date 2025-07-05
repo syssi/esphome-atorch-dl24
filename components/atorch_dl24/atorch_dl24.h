@@ -53,6 +53,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   void set_check_crc(bool check_crc) { check_crc_ = check_crc; }
   void decode(const uint8_t *data, uint16_t length);
   bool write_register(uint8_t device_type, uint8_t address, uint32_t value);
+  void assemble(const uint8_t *data, uint16_t length);
   uint8_t get_device_type() { return this->device_type_; }
 
  protected:
@@ -99,7 +100,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   bool incomplete_notify_value_received_ = false;
 
   uint8_t previous_value_ = 61;
-  uint8_t composite_notify_value_[36];
+  std::vector<uint8_t> frame_buffer_;
   uint8_t device_type_ = 0x00;
   uint16_t char_notify_handle_;
   uint16_t char_command_handle_;
