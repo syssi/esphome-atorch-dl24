@@ -115,7 +115,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       }
       this->char_notify_handle_ = 0;
       this->char_command_handle_ = 0;
-      this->incomplete_notify_value_received_ = false;
+      this->frame_buffer_.clear();
 
       break;
     }
@@ -153,26 +153,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       ESP_LOGVV(TAG, "Notification received: %s",
                 format_hex_pretty(param->notify.value, param->notify.value_len + 0).c_str());
 
-      // Composite two short notifications into a complete one
-      // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00 (20)
-      if (!this->incomplete_notify_value_received_ && param->notify.value_len == 20 &&
-          param->notify.value[0] == START_OF_FRAME_BYTE1 && param->notify.value[1] == START_OF_FRAME_BYTE2) {
-        memcpy(this->composite_notify_value_, param->notify.value, param->notify.value_len);
-        this->incomplete_notify_value_received_ = true;
-        break;
-      }
-
-      // 00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19 (16)
-      if (this->incomplete_notify_value_received_ && param->notify.value_len == 16) {
-        memcpy(this->composite_notify_value_ + 20, param->notify.value, param->notify.value_len);
-        // FF.55.01.02.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.00.1E.00.00.00.00.3C.00.00.00.00.19
-        this->decode(this->composite_notify_value_, 36);
-        this->incomplete_notify_value_received_ = false;
-        this->composite_notify_value_[0] = 0x00;
-        break;
-      }
-
-      this->decode(param->notify.value, param->notify.value_len);
+      this->assemble(param->notify.value, param->notify.value_len);
 
       break;
     }
@@ -208,23 +189,65 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
 // FF55020103000042
 // FF55020000000046
 // https://github.com/NiceLabs/atorch-console/blob/master/src/service/atorch-packet/packet-reply.spec.ts
-void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
+void AtorchDL24::assemble(const uint8_t *data, uint16_t length) {
+  if (this->frame_buffer_.size() > 64) {
+    ESP_LOGW(TAG, "Frame dropped because of invalid length");
+    this->frame_buffer_.clear();
+  }
+
+  // Flush buffer on every preamble (start of frame)
+  if (length >= 2 && data[0] == START_OF_FRAME_BYTE1 && data[1] == START_OF_FRAME_BYTE2) {
+    this->frame_buffer_.clear();
+  }
+
+  this->frame_buffer_.insert(this->frame_buffer_.end(), data, data + length);
+
+  if (this->frame_buffer_.size() >= 4) {
+    const uint8_t *raw = &this->frame_buffer_[0];
+
+    // Determine expected frame size based on message type
+    uint16_t expected_frame_size = 0;
+    if (this->frame_buffer_.size() >= 3) {
+      switch (raw[2]) {
+        case MESSAGE_TYPE_REPORT:
+          expected_frame_size = 36;
+          break;
+        case MESSAGE_TYPE_REPLY:
+          expected_frame_size = 8;
+          break;
+        default:
+          ESP_LOGW(TAG, "Unknown message type: 0x%02X", raw[2]);
+          this->frame_buffer_.clear();
+          return;
+      }
+    }
+
+    // Check if we have a complete frame
+    if (expected_frame_size > 0 && this->frame_buffer_.size() >= expected_frame_size) {
+      // Verify CRC if enabled
+      if (this->check_crc_) {
+        uint8_t computed_crc = crc(raw, expected_frame_size - 1);
+        uint8_t remote_crc = raw[expected_frame_size - 1];
+        if (computed_crc != remote_crc) {
+          ESP_LOGW(TAG, "CRC check failed! 0x%02X != 0x%02X", computed_crc, remote_crc);
+          this->frame_buffer_.clear();
+          return;
+        }
+      }
+
+      std::vector<uint8_t> frame_data(raw, raw + expected_frame_size);
+      this->decode(frame_data);
+      this->frame_buffer_.clear();
+    }
+  }
+}
+
+void AtorchDL24::decode(const std::vector<uint8_t> &data) {
+  uint16_t length = data.size();
+  // Accept valid received frame lengths: 36 (report), 8 (reply)
   if (length != 36 && length != 8) {
     ESP_LOGW(TAG, "Frame skipped because of invalid length (%u)", length);
-    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
-    return;
-  }
-
-  uint8_t computed_crc = crc(data, length - 1);
-  uint8_t remote_crc = data[length - 1];
-  if (this->check_crc_ && computed_crc != remote_crc) {
-    ESP_LOGW(TAG, "CRC check failed (0x%02X != 0x%02X). Skipping frame", computed_crc, remote_crc);
-    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data, length).c_str());
-    return;
-  }
-
-  if (data[0] != START_OF_FRAME_BYTE1 && data[1] != START_OF_FRAME_BYTE2) {
-    ESP_LOGW(TAG, "Invalid header");
+    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data.data(), length).c_str());
     return;
   }
 
@@ -272,17 +295,17 @@ void AtorchDL24::decode(const uint8_t *data, uint16_t length) {
   switch (device_type) {
     case DEVICE_TYPE_AC_METER:
     case DEVICE_TYPE_DC_METER:
-      this->decode_ac_and_dc_(data, length);
+      this->decode_ac_and_dc_(data);
       break;
     case DEVICE_TYPE_USB_METER:
-      this->decode_usb_(data, length);
+      this->decode_usb_(data);
       break;
     default:
       ESP_LOGW(TAG, "Unsupported device type (0x%02X)", device_type);
   }
 }
 
-void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode_ac_and_dc_(const std::vector<uint8_t> &data) {
   auto dl24_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };
@@ -359,7 +382,7 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // 35    1  0x1C                 Checksum
 }
 
-void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode_usb_(const std::vector<uint8_t> &data) {
   auto dl24_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };

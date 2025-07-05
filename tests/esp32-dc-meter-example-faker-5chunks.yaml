@@ -1,0 +1,93 @@
+<<: !include ../esp32-dc-meter-example.yaml
+
+interval:
+  - interval: 10s
+    then:
+      # Test 1: Send a complete 36-byte frame in 5 chunks
+      - lambda: |-
+          // Complete frame: FF 55 01 02 00 00 20 00 4E 20 00 13 FA 00 00 00 11 00 00 00 00 00 00 00 00 25 00 02 21 1A 3C 00 00 00 00 09
+
+          // Chunk 1: Header + start (8 bytes)
+          const uint8_t chunk1[8] = {
+            0xFF, 0x55, 0x01, 0x02, 0x00, 0x00, 0x20, 0x00
+          };
+          id(atorch0).assemble(chunk1, sizeof(chunk1));
+
+      - delay: 100ms
+      - lambda: |-
+          // Chunk 2: Voltage + current (7 bytes)
+          const uint8_t chunk2[7] = {
+            0x4E, 0x20, 0x00, 0x13, 0xFA, 0x00, 0x00
+          };
+          id(atorch0).assemble(chunk2, sizeof(chunk2));
+
+      - delay: 100ms
+      - lambda: |-
+          // Chunk 3: Energy + more data (8 bytes)
+          const uint8_t chunk3[8] = {
+            0x00, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          };
+          id(atorch0).assemble(chunk3, sizeof(chunk3));
+
+      - delay: 100ms
+      - lambda: |-
+          // Chunk 4: Temperature + runtime (8 bytes)
+          const uint8_t chunk4[8] = {
+            0x00, 0x00, 0x00, 0x25, 0x00, 0x02, 0x21, 0x1A
+          };
+          id(atorch0).assemble(chunk4, sizeof(chunk4));
+
+      - delay: 100ms
+      - lambda: |-
+          // Chunk 5: Final data + checksum (5 bytes)
+          const uint8_t chunk5[5] = {
+            0x3C, 0x00, 0x00, 0x00, 0x09
+          };
+          id(atorch0).assemble(chunk5, sizeof(chunk5));
+
+      - delay: 3s
+
+      # Test 2: Send a reply frame in 3 chunks
+      - lambda: |-
+          // Complete reply frame: FF 55 02 01 01 00 00 40
+
+          // Chunk 1: Header (4 bytes)
+          const uint8_t reply_chunk1[4] = {
+            0xFF, 0x55, 0x02, 0x01
+          };
+          id(atorch0).assemble(reply_chunk1, sizeof(reply_chunk1));
+
+      - delay: 50ms
+      - lambda: |-
+          // Chunk 2: Data (3 bytes)
+          const uint8_t reply_chunk2[3] = {
+            0x01, 0x00, 0x00
+          };
+          id(atorch0).assemble(reply_chunk2, sizeof(reply_chunk2));
+
+      - delay: 50ms
+      - lambda: |-
+          // Chunk 3: Checksum (1 byte)
+          const uint8_t reply_chunk3[1] = {
+            0x40
+          };
+          id(atorch0).assemble(reply_chunk3, sizeof(reply_chunk3));
+
+      - delay: 3s
+
+      # Test 3: Send interrupted frame (should be cleared by new frame start)
+      - lambda: |-
+          // Start a frame but don't complete it
+          const uint8_t incomplete_chunk[4] = {
+            0xFF, 0x55, 0x01, 0x02
+          };
+          id(atorch0).assemble(incomplete_chunk, sizeof(incomplete_chunk));
+
+      - delay: 100ms
+      - lambda: |-
+          // Start a new frame (should clear the incomplete one)
+          const uint8_t new_frame[36] = {
+            0xFF, 0x55, 0x01, 0x02, 0x00, 0x00, 0x20, 0x00, 0x4E, 0x1E, 0x00, 0x13, 0xFA, 0x00, 0x00, 0x00, 0x11, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x00, 0x02, 0x21, 0x1B, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x08
+          };
+          id(atorch0).assemble(new_frame, sizeof(new_frame));
