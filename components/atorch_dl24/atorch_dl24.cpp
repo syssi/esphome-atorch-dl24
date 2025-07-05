@@ -115,7 +115,6 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       }
       this->char_notify_handle_ = 0;
       this->char_command_handle_ = 0;
-      this->incomplete_notify_value_received_ = false;
       this->frame_buffer_.clear();
 
       break;

@@ -97,7 +97,6 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   text_sensor::TextSensor *runtime_formatted_text_sensor_;
 
   bool check_crc_;
-  bool incomplete_notify_value_received_ = false;
 
   uint8_t previous_value_ = 61;
   std::vector<uint8_t> frame_buffer_;
