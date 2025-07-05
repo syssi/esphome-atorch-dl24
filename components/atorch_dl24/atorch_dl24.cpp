@@ -296,17 +296,17 @@ void AtorchDL24::decode(const std::vector<uint8_t> &data) {
   switch (device_type) {
     case DEVICE_TYPE_AC_METER:
     case DEVICE_TYPE_DC_METER:
-      this->decode_ac_and_dc_(data, length);
+      this->decode_ac_and_dc_(data);
       break;
     case DEVICE_TYPE_USB_METER:
-      this->decode_usb_(data, length);
+      this->decode_usb_(data);
       break;
     default:
       ESP_LOGW(TAG, "Unsupported device type (0x%02X)", device_type);
   }
 }
 
-void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode_ac_and_dc_(const std::vector<uint8_t> &data) {
   auto dl24_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };
@@ -383,7 +383,7 @@ void AtorchDL24::decode_ac_and_dc_(const uint8_t *data, uint16_t length) {
   // 35    1  0x1C                 Checksum
 }
 
-void AtorchDL24::decode_usb_(const uint8_t *data, uint16_t length) {
+void AtorchDL24::decode_usb_(const std::vector<uint8_t> &data) {
   auto dl24_get_16bit = [&](size_t i) -> uint16_t {
     return (uint16_t(data[i + 0]) << 8) | (uint16_t(data[i + 1]) << 0);
   };
