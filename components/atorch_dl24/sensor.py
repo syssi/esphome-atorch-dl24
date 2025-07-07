@@ -96,7 +96,7 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
             unit_of_measurement=UNIT_AMPERE_HOURS,
             icon=ICON_CAPACITY,
             accuracy_decimals=3,
-            device_class=DEVICE_CLASS_ENERGY,
+            device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_TOTAL_INCREASING,
         ),
         cv.Optional(CONF_ENERGY): sensor.sensor_schema(
