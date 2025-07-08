@@ -49,7 +49,6 @@ CONF_PRICE_PER_KWH = "price_per_kwh"
 CONF_RUNTIME = "runtime"
 
 UNIT_AMPERE_HOURS = "Ah"
-ICON_CAPACITY = "mdi:battery-medium"
 
 SENSORS = [
     CONF_VOLTAGE,
@@ -94,7 +93,7 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
         ),
         cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
             unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon=ICON_CAPACITY,
+            icon="mdi:battery-medium",
             accuracy_decimals=3,
             device_class=DEVICE_CLASS_EMPTY,
             state_class=STATE_CLASS_TOTAL_INCREASING,
