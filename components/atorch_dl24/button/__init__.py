@@ -34,14 +34,6 @@ CONF_ENTER = "enter"
 CONF_USB_PLUS = "usb_plus"
 CONF_USB_MINUS = "usb_minus"
 
-ICON_RESET = "mdi:history"
-ICON_PLUS = "mdi:plus-circle-outline"
-ICON_MINUS = "mdi:minus-circle-outline"
-ICON_SETUP = "mdi:cog"
-ICON_ENTER = "mdi:keyboard-return"
-ICON_USB_PLUS = "mdi:plus-circle-outline"
-ICON_USB_MINUS = "mdi:minus-circle-outline"
-
 BUTTONS = {
     CONF_RESET_ENERGY: 0x01,
     CONF_RESET_CAPACITY: 0x02,
@@ -60,34 +52,34 @@ AtorchButton = atorch_dl24_ns.class_("AtorchButton", button.Button, cg.Component
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_RESET_ENERGY): button.button_schema(
-            AtorchButton, icon=ICON_RESET
+            AtorchButton, icon="mdi:history"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_RESET_CAPACITY): button.button_schema(
-            AtorchButton, icon=ICON_RESET
+            AtorchButton, icon="mdi:history"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_RESET_RUNTIME): button.button_schema(
-            AtorchButton, icon=ICON_RESET
+            AtorchButton, icon="mdi:history"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_RESET_ALL): button.button_schema(
-            AtorchButton, icon=ICON_RESET
+            AtorchButton, icon="mdi:history"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_PLUS): button.button_schema(
-            AtorchButton, icon=ICON_PLUS
+            AtorchButton, icon="mdi:plus-circle-outline"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_MINUS): button.button_schema(
-            AtorchButton, icon=ICON_MINUS
+            AtorchButton, icon="mdi:minus-circle-outline"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_ENTER): button.button_schema(
-            AtorchButton, icon=ICON_ENTER
+            AtorchButton, icon="mdi:keyboard-return"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_SETUP): button.button_schema(
-            AtorchButton, icon=ICON_SETUP
+            AtorchButton, icon="mdi:cog"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_USB_PLUS): button.button_schema(
-            AtorchButton, icon=ICON_USB_PLUS
+            AtorchButton, icon="mdi:plus-circle-outline"
         ).extend(cv.COMPONENT_SCHEMA),
         cv.Optional(CONF_USB_MINUS): button.button_schema(
-            AtorchButton, icon=ICON_USB_MINUS
+            AtorchButton, icon="mdi:minus-circle-outline"
         ).extend(cv.COMPONENT_SCHEMA),
     }
 )
