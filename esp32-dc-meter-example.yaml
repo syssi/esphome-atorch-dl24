@@ -52,11 +52,11 @@ esp32_ble_tracker:
 
 ble_client:
   - mac_address: ${dl24_mac_address}
-    id: ble_client0
+    id: client0
 
 atorch_dl24:
   - id: atorch0
-    ble_client_id: ble_client0
+    ble_client_id: client0
     check_crc: true
     # The meter publishes a status report per second via BLE notification. If you don't like this update interval
     # you can use this setting to throttle the sensor updates by skipping some status reports.
