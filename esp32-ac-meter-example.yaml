@@ -28,6 +28,10 @@ wifi:
 
 ota:
   platform: esphome
+  on_begin:
+    then:
+      - switch.turn_off: ble_client_switch0
+      - logger.log: "BLE connection suspended for OTA update"
 
 logger:
   level: DEBUG
@@ -64,38 +68,6 @@ binary_sensor:
     running:
       name: "${name} running"
 
-sensor:
-  - platform: atorch_dl24
-    atorch_dl24_id: atorch0
-    voltage:
-      name: "${name} voltage"
-    current:
-      name: "${name} current"
-    power:
-      name: "${name} power"
-    capacity:
-      name: "${name} capacity"
-    energy:
-      name: "${name} energy"
-    temperature:
-      name: "${name} temperature"
-    dim_backlight:
-      name: "${name} dim backlight"
-    frequency:
-      name: "${name} frequency"
-    power_factor:
-      name: "${name} power_factor"
-    price_per_kwh:
-      name: "${name} price per kwh"
-    runtime:
-      name: "${name} runtime"
-
-text_sensor:
-  - platform: atorch_dl24
-    atorch_dl24_id: atorch0
-    runtime_formatted:
-      name: "${name} runtime formatted"
-
 # If you use `mqtt` you can control a button if you publish the message "PRESS". The topic depends on
 # the name of your ESPHome node and the name of the button entity:
 #
@@ -123,3 +95,41 @@ button:
       name: "${name} setup"
     enter:
       name: "${name} enter"
+
+sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    voltage:
+      name: "${name} voltage"
+    current:
+      name: "${name} current"
+    power:
+      name: "${name} power"
+    capacity:
+      name: "${name} capacity"
+    energy:
+      name: "${name} energy"
+    temperature:
+      name: "${name} temperature"
+    dim_backlight:
+      name: "${name} dim backlight"
+    frequency:
+      name: "${name} frequency"
+    power_factor:
+      name: "${name} power_factor"
+    price_per_kwh:
+      name: "${name} price per kwh"
+    runtime:
+      name: "${name} runtime"
+
+switch:
+  - platform: ble_client
+    ble_client_id: client0
+    name: "${name} enable bluetooth connection"
+    id: ble_client_switch0
+
+text_sensor:
+  - platform: atorch_dl24
+    atorch_dl24_id: atorch0
+    runtime_formatted:
+      name: "${name} runtime formatted"
