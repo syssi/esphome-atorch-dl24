@@ -5,7 +5,7 @@ substitutions:
   external_components_source: github://syssi/esphome-atorch-dl24@main
   dl24_mac_address0: !secret dl24_mac_address0
   dl24_mac_address1: !secret dl24_mac_address1
-  project_version: 2.2.0
+  project_version: 2.3.0
   device_description: "Monitor and control two Atorch meters via bluetooth"
 
 esphome:
