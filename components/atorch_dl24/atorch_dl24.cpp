@@ -57,7 +57,7 @@ bool AtorchDL24::write_register(uint8_t device_type, uint8_t address, uint32_t v
   frame[8] = value >> 0;
   frame[9] = crc(frame, sizeof(frame) - 1);
 
-  ESP_LOGI(TAG, "Write command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());
+  ESP_LOGI(TAG, "Write command: %s", format_hex_pretty(frame, sizeof(frame)).c_str());  // NOLINT
   auto status =
       esp_ble_gattc_write_char(this->parent_->get_gattc_if(), this->parent_->get_conn_id(), this->char_command_handle_,
                                sizeof(frame), frame, ESP_GATT_WRITE_TYPE_NO_RSP, ESP_GATT_AUTH_REQ_NONE);
@@ -159,7 +159,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
         break;
 
       ESP_LOGVV(TAG, "Notification received: %s",
-                format_hex_pretty(param->notify.value, param->notify.value_len + 0).c_str());
+                format_hex_pretty(param->notify.value, param->notify.value_len + 0).c_str());  // NOLINT
 
       this->assemble(param->notify.value, param->notify.value_len);
 
@@ -255,7 +255,7 @@ void AtorchDL24::decode(const std::vector<uint8_t> &data) {
   // Accept valid received frame lengths: 36 (report), 8 (reply)
   if (length != 36 && length != 8) {
     ESP_LOGW(TAG, "Frame skipped because of invalid length (%u)", length);
-    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data.data(), length).c_str());
+    ESP_LOGD(TAG, "Payload: %s", format_hex_pretty(data.data(), length).c_str());  // NOLINT
     return;
   }
 
