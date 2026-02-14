@@ -73,9 +73,22 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
     seconds = seconds % 3600;
     int minutes = seconds / 60;
     seconds = seconds % 60;
-    return (years ? to_string(years) + "y " : "") + (days ? to_string(days) + "d " : "") +
-           (hours ? to_string(hours) + "h " : "") + (minutes ? to_string(minutes) + "m " : "") +
-           (seconds ? to_string(seconds) + "s" : "");
+
+    char buf[24];
+    int len = 0;
+
+    if (years)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dy ", years);
+    if (days)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dd ", days);
+    if (hours)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dh ", hours);
+    if (minutes)
+      len += snprintf(buf + len, sizeof(buf) - len, "%dm ", minutes);
+    if (seconds)
+      len += snprintf(buf + len, sizeof(buf) - len, "%ds", seconds);
+
+    return std::string(buf, len);
   }
 
   binary_sensor::BinarySensor *running_binary_sensor_;
