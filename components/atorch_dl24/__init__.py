@@ -20,13 +20,18 @@ ATORCH_DL24_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = cv.Schema(
-    {
-        cv.GenerateID(): cv.declare_id(AtorchDL24),
-        cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
-        cv.Optional(CONF_THROTTLE, default="0s"): cv.positive_time_period_milliseconds,
-    }
-).extend(ble_client.BLE_CLIENT_SCHEMA)
+CONFIG_SCHEMA = cv.All(
+    cv.require_esphome_version(2024, 12, 0),
+    cv.Schema(
+        {
+            cv.GenerateID(): cv.declare_id(AtorchDL24),
+            cv.Optional(CONF_CHECK_CRC, default=True): cv.boolean,
+            cv.Optional(
+                CONF_THROTTLE, default="0s"
+            ): cv.positive_time_period_milliseconds,
+        }
+    ).extend(ble_client.BLE_CLIENT_SCHEMA),
+)
 
 
 async def to_code(config):
