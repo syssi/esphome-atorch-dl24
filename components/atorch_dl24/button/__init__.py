@@ -53,34 +53,34 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_RESET_ENERGY): button.button_schema(
             AtorchButton, icon="mdi:history"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RESET_CAPACITY): button.button_schema(
             AtorchButton, icon="mdi:history"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RESET_RUNTIME): button.button_schema(
             AtorchButton, icon="mdi:history"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_RESET_ALL): button.button_schema(
             AtorchButton, icon="mdi:history"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_PLUS): button.button_schema(
             AtorchButton, icon="mdi:plus-circle-outline"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_MINUS): button.button_schema(
             AtorchButton, icon="mdi:minus-circle-outline"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_ENTER): button.button_schema(
             AtorchButton, icon="mdi:keyboard-return"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_SETUP): button.button_schema(
             AtorchButton, icon="mdi:cog"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_USB_PLUS): button.button_schema(
             AtorchButton, icon="mdi:plus-circle-outline"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
         cv.Optional(CONF_USB_MINUS): button.button_schema(
             AtorchButton, icon="mdi:minus-circle-outline"
-        ).extend(cv.COMPONENT_SCHEMA),
+        ),
     }
 )
 
