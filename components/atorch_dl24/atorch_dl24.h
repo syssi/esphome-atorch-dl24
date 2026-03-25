@@ -91,7 +91,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
     return std::string(buf, len);
   }
 
-  binary_sensor::BinarySensor *running_binary_sensor_;
+  binary_sensor::BinarySensor *running_binary_sensor_{nullptr};
 
   sensor::Sensor *voltage_sensor_{nullptr};
   sensor::Sensor *current_sensor_{nullptr};
@@ -107,7 +107,7 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   sensor::Sensor *power_factor_sensor_{nullptr};
   sensor::Sensor *runtime_sensor_{nullptr};
 
-  text_sensor::TextSensor *runtime_formatted_text_sensor_;
+  text_sensor::TextSensor *runtime_formatted_text_sensor_{nullptr};
 
   bool check_crc_;
 
