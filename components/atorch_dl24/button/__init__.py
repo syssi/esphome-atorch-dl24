@@ -72,9 +72,7 @@ CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
         cv.Optional(CONF_ENTER): button.button_schema(
             AtorchButton, icon="mdi:keyboard-return"
         ),
-        cv.Optional(CONF_SETUP): button.button_schema(
-            AtorchButton, icon="mdi:cog"
-        ),
+        cv.Optional(CONF_SETUP): button.button_schema(AtorchButton, icon="mdi:cog"),
         cv.Optional(CONF_USB_PLUS): button.button_schema(
             AtorchButton, icon="mdi:plus-circle-outline"
         ),
