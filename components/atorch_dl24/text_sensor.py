@@ -18,7 +18,7 @@ TEXT_SENSORS = [
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
         cv.Optional(CONF_RUNTIME_FORMATTED): text_sensor.text_sensor_schema(
-            text_sensor.TextSensor, icon=ICON_TIMELAPSE
+            icon=ICON_TIMELAPSE
         ),
     }
 )
