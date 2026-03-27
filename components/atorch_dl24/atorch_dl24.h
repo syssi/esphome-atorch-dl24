@@ -114,8 +114,8 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
   uint8_t previous_value_ = 61;
   std::vector<uint8_t> frame_buffer_;
   uint8_t device_type_ = 0x00;
-  uint16_t char_notify_handle_;
-  uint16_t char_command_handle_;
+  uint16_t char_notify_handle_{0};
+  uint16_t char_command_handle_{0};
   uint32_t last_publish_{0};
   uint32_t throttle_{0};
 };
