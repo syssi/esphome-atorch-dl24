@@ -7,6 +7,7 @@ substitutions:
 
 esphome:
   name: ${name}
+  friendly_name: ${name}
   comment: ${device_description}
   min_version: 2024.6.0
   project:
@@ -60,37 +61,37 @@ binary_sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     running:
-      name: "${name} running"
+      name: "running"
 
 sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     voltage:
-      name: "${name} voltage"
+      name: "voltage"
     current:
-      name: "${name} current"
+      name: "current"
     power:
-      name: "${name} power"
+      name: "power"
     capacity:
-      name: "${name} capacity"
+      name: "capacity"
     energy:
-      name: "${name} energy"
+      name: "energy"
     temperature:
-      name: "${name} temperature"
+      name: "temperature"
     dim_backlight:
-      name: "${name} dim backlight"
+      name: "dim backlight"
     usb_data_minus:
-      name: "${name} usb data minus"
+      name: "usb data minus"
     usb_data_plus:
-      name: "${name} usb data plus"
+      name: "usb data plus"
     runtime:
-      name: "${name} runtime"
+      name: "runtime"
 
 text_sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     runtime_formatted:
-      name: "${name} runtime formatted"
+      name: "runtime formatted"
 
 # If you use `mqtt` you can control a button if you publish the message "PRESS". The topic depends on
 # the name of your ESPHome node and the name of the button entity:
@@ -104,18 +105,18 @@ button:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     reset_energy:
-      name: "${name} reset energy"
+      name: "reset energy"
     reset_capacity:
-      name: "${name} reset capacity"
+      name: "reset capacity"
     reset_runtime:
-      name: "${name} reset runtime"
+      name: "reset runtime"
     reset_all:
-      name: "${name} reset all"
+      name: "reset all"
     setup:
-      name: "${name} setup"
+      name: "setup"
     enter:
-      name: "${name} enter"
+      name: "enter"
     usb_plus:
-      name: "${name} plus"
+      name: "plus"
     usb_minus:
-      name: "${name} minus"
+      name: "minus"

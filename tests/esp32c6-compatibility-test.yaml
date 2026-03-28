@@ -5,6 +5,7 @@ substitutions:
 
 esphome:
   name: ${name}
+  friendly_name: ${name}
   comment: ${device_description}
   min_version: 2025.6.0
 
@@ -49,4 +50,4 @@ sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     voltage:
-      name: "${name} voltage"
+      name: "voltage"
