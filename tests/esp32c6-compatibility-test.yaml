@@ -49,4 +49,4 @@ sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     voltage:
-      name: "${name} voltage"
+      name: "voltage"
