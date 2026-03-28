@@ -15,6 +15,11 @@ esphome:
   project:
     name: "syssi.esphome-atorch-dl24"
     version: ${project_version}
+  devices:
+    - id: device0
+      name: "${device0}"
+    - id: device1
+      name: "${device1}"
 
 esp32:
   board: wemos_d1_mini32
@@ -79,109 +84,147 @@ binary_sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     running:
-      name: "${device0} running"
+      name: "running"
+      device_id: device0
 
   - platform: atorch_dl24
     atorch_dl24_id: atorch1
     running:
-      name: "${device1} running"
+      name: "running"
+      device_id: device1
 
 button:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     reset_energy:
-      name: "${device0} reset energy"
+      name: "reset energy"
+      device_id: device0
     reset_capacity:
-      name: "${device0} reset capacity"
+      name: "reset capacity"
+      device_id: device0
     reset_runtime:
-      name: "${device0} reset runtime"
+      name: "reset runtime"
+      device_id: device0
     reset_all:
-      name: "${device0} reset all"
+      name: "reset all"
+      device_id: device0
     usb_plus:
-      name: "${device0} plus"
+      name: "plus"
+      device_id: device0
     usb_minus:
-      name: "${device0} minus"
+      name: "minus"
+      device_id: device0
     setup:
-      name: "${device0} setup"
+      name: "setup"
+      device_id: device0
     enter:
-      name: "${device0} enter"
+      name: "enter"
+      device_id: device0
 
   - platform: atorch_dl24
     atorch_dl24_id: atorch1
     reset_energy:
-      name: "${device1} reset energy"
+      name: "reset energy"
+      device_id: device1
     reset_capacity:
-      name: "${device1} reset capacity"
+      name: "reset capacity"
+      device_id: device1
     reset_runtime:
-      name: "${device1} reset runtime"
+      name: "reset runtime"
+      device_id: device1
     reset_all:
-      name: "${device1} reset all"
+      name: "reset all"
+      device_id: device1
     usb_plus:
-      name: "${device1} plus"
+      name: "plus"
+      device_id: device1
     usb_minus:
-      name: "${device1} minus"
+      name: "minus"
+      device_id: device1
     setup:
-      name: "${device1} setup"
+      name: "setup"
+      device_id: device1
     enter:
-      name: "${device1} enter"
+      name: "enter"
+      device_id: device1
 
 sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     voltage:
-      name: "${device0} voltage"
+      name: "voltage"
+      device_id: device0
     current:
-      name: "${device0} current"
+      name: "current"
+      device_id: device0
     power:
-      name: "${device0} power"
+      name: "power"
+      device_id: device0
     capacity:
-      name: "${device0} capacity"
+      name: "capacity"
+      device_id: device0
     energy:
-      name: "${device0} energy"
+      name: "energy"
+      device_id: device0
     temperature:
-      name: "${device0} temperature"
+      name: "temperature"
+      device_id: device0
     dim_backlight:
-      name: "${device0} dim backlight"
+      name: "dim backlight"
+      device_id: device0
     runtime:
-      name: "${device0} runtime"
+      name: "runtime"
+      device_id: device0
 
   - platform: atorch_dl24
     atorch_dl24_id: atorch1
     voltage:
-      name: "${device1} voltage"
+      name: "voltage"
+      device_id: device1
     current:
-      name: "${device1} current"
+      name: "current"
+      device_id: device1
     power:
-      name: "${device1} power"
+      name: "power"
+      device_id: device1
     capacity:
-      name: "${device1} capacity"
+      name: "capacity"
+      device_id: device1
     energy:
-      name: "${device1} energy"
+      name: "energy"
+      device_id: device1
     temperature:
-      name: "${device1} temperature"
+      name: "temperature"
+      device_id: device1
     dim_backlight:
-      name: "${device1} dim backlight"
+      name: "dim backlight"
+      device_id: device1
     runtime:
-      name: "${device1} runtime"
+      name: "runtime"
+      device_id: device1
 
 switch:
   - platform: ble_client
     ble_client_id: client0
-    name: "${device0} enable bluetooth connection"
+    name: "enable bluetooth connection"
     id: ble_client_switch0
+    device_id: device0
 
   - platform: ble_client
     ble_client_id: client1
-    name: "${device1} enable bluetooth connection"
+    name: "enable bluetooth connection"
     id: ble_client_switch1
+    device_id: device1
 
 text_sensor:
   - platform: atorch_dl24
     atorch_dl24_id: atorch0
     runtime_formatted:
-      name: "${device0} runtime formatted"
+      name: "runtime formatted"
+      device_id: device0
 
   - platform: atorch_dl24
     atorch_dl24_id: atorch1
     runtime_formatted:
-      name: "${device1} runtime formatted"
+      name: "runtime formatted"
+      device_id: device1
