@@ -50,122 +50,109 @@ CONF_RUNTIME = "runtime"
 
 UNIT_AMPERE_HOURS = "Ah"
 
-SENSORS = [
-    CONF_VOLTAGE,
-    CONF_CURRENT,
-    CONF_POWER,
-    CONF_CAPACITY,
-    CONF_ENERGY,
-    CONF_TEMPERATURE,
-    CONF_DIM_BACKLIGHT,
-    CONF_USB_DATA_MINUS,
-    CONF_USB_DATA_PLUS,
-    CONF_PRICE_PER_KWH,
-    CONF_FREQUENCY,
-    CONF_POWER_FACTOR,
-    CONF_RUNTIME,
-]
+SENSOR_DEFS = {
+    CONF_VOLTAGE: {
+        "unit_of_measurement": UNIT_VOLT,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_VOLTAGE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_CURRENT: {
+        "unit_of_measurement": UNIT_AMPERE,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 3,
+        "device_class": DEVICE_CLASS_CURRENT,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_POWER: {
+        "unit_of_measurement": UNIT_WATT,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 4,
+        "device_class": DEVICE_CLASS_POWER,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_CAPACITY: {
+        "unit_of_measurement": UNIT_AMPERE_HOURS,
+        "icon": "mdi:battery-medium",
+        "accuracy_decimals": 3,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_ENERGY: {
+        "unit_of_measurement": UNIT_WATT_HOURS,
+        "icon": ICON_COUNTER,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_ENERGY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+    CONF_TEMPERATURE: {
+        "unit_of_measurement": UNIT_CELSIUS,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_TEMPERATURE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_DIM_BACKLIGHT: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMER,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_USB_DATA_MINUS: {
+        "unit_of_measurement": UNIT_VOLT,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_VOLTAGE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_USB_DATA_PLUS: {
+        "unit_of_measurement": UNIT_VOLT,
+        "icon": ICON_EMPTY,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_VOLTAGE,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_PRICE_PER_KWH: {
+        "unit_of_measurement": UNIT_EMPTY,
+        "icon": ICON_COUNTER,
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_FREQUENCY: {
+        "unit_of_measurement": UNIT_HERTZ,
+        "icon": ICON_CURRENT_AC,
+        "accuracy_decimals": 1,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_POWER_FACTOR: {
+        "accuracy_decimals": 2,
+        "device_class": DEVICE_CLASS_POWER_FACTOR,
+        "state_class": STATE_CLASS_MEASUREMENT,
+    },
+    CONF_RUNTIME: {
+        "unit_of_measurement": UNIT_SECOND,
+        "icon": ICON_TIMELAPSE,
+        "accuracy_decimals": 0,
+        "device_class": DEVICE_CLASS_EMPTY,
+        "state_class": STATE_CLASS_TOTAL_INCREASING,
+    },
+}
 
-
-# pylint: disable=too-many-function-args
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
-        cv.Optional(CONF_VOLTAGE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_VOLT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_VOLTAGE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CURRENT): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE,
-            icon=ICON_EMPTY,
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_CURRENT,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_POWER): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=4,
-            device_class=DEVICE_CLASS_POWER,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_CAPACITY): sensor.sensor_schema(
-            unit_of_measurement=UNIT_AMPERE_HOURS,
-            icon="mdi:battery-medium",
-            accuracy_decimals=3,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
-        ),
-        cv.Optional(CONF_ENERGY): sensor.sensor_schema(
-            unit_of_measurement=UNIT_WATT_HOURS,
-            icon=ICON_COUNTER,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_ENERGY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
-        ),
-        cv.Optional(CONF_TEMPERATURE): sensor.sensor_schema(
-            unit_of_measurement=UNIT_CELSIUS,
-            icon=ICON_EMPTY,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_TEMPERATURE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_DIM_BACKLIGHT): sensor.sensor_schema(
-            unit_of_measurement=UNIT_SECOND,
-            icon=ICON_TIMER,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_USB_DATA_MINUS): sensor.sensor_schema(
-            unit_of_measurement=UNIT_VOLT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_VOLTAGE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_USB_DATA_PLUS): sensor.sensor_schema(
-            unit_of_measurement=UNIT_VOLT,
-            icon=ICON_EMPTY,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_VOLTAGE,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_PRICE_PER_KWH): sensor.sensor_schema(
-            unit_of_measurement=UNIT_EMPTY,
-            icon=ICON_COUNTER,
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_FREQUENCY): sensor.sensor_schema(
-            unit_of_measurement=UNIT_HERTZ,
-            icon=ICON_CURRENT_AC,
-            accuracy_decimals=1,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_POWER_FACTOR): sensor.sensor_schema(
-            accuracy_decimals=2,
-            device_class=DEVICE_CLASS_POWER_FACTOR,
-            state_class=STATE_CLASS_MEASUREMENT,
-        ),
-        cv.Optional(CONF_RUNTIME): sensor.sensor_schema(
-            unit_of_measurement=UNIT_SECOND,
-            icon=ICON_TIMELAPSE,
-            accuracy_decimals=0,
-            device_class=DEVICE_CLASS_EMPTY,
-            state_class=STATE_CLASS_TOTAL_INCREASING,
-        ),
+        cv.Optional(key): sensor.sensor_schema(**kwargs)
+        for key, kwargs in SENSOR_DEFS.items()
     }
 )
 
 
 async def to_code(config):
     hub = await cg.get_variable(config[CONF_ATORCH_DL24_ID])
-    for key in SENSORS:
+    for key in SENSOR_DEFS:
         if key in config:
             conf = config[key]
             sens = await sensor.new_sensor(conf)
