@@ -1,26 +1,31 @@
 #pragma once
 
 #include "esphome/core/component.h"
-#include "esphome/components/ble_client/ble_client.h"
-#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/text_sensor/text_sensor.h"
 #include "esphome/core/hal.h"
 
 #ifdef USE_ESP32
-
+#include "esphome/components/ble_client/ble_client.h"
+#include "esphome/components/esp32_ble_tracker/esp32_ble_tracker.h"
 #include <esp_gattc_api.h>
+namespace espbt = esphome::esp32_ble_tracker;
+#endif
 
 namespace esphome {
 namespace atorch_dl24 {
 
-namespace espbt = esphome::esp32_ble_tracker;
-
-class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
+class AtorchDL24 :
+#ifdef USE_ESP32
+    public esphome::ble_client::BLEClientNode,
+#endif
+    public Component {
  public:
+#ifdef USE_ESP32
   void gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                            esp_ble_gattc_cb_param_t *param) override;
+#endif
   void dump_config() override;
   float get_setup_priority() const override { return setup_priority::DATA; }
 
@@ -109,18 +114,18 @@ class AtorchDL24 : public esphome::ble_client::BLEClientNode, public Component {
 
   text_sensor::TextSensor *runtime_formatted_text_sensor_{nullptr};
 
-  bool check_crc_;
+  bool check_crc_{false};
 
   uint8_t previous_value_ = 61;
   std::vector<uint8_t> frame_buffer_;
   uint8_t device_type_ = 0x00;
+#ifdef USE_ESP32
   uint16_t char_notify_handle_{0};
   uint16_t char_command_handle_{0};
+#endif
   uint32_t last_publish_{0};
   uint32_t throttle_{0};
 };
 
 }  // namespace atorch_dl24
 }  // namespace esphome
-
-#endif

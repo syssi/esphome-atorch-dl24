@@ -2,29 +2,16 @@
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
 
-#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
-#define ADDR_STR(x) x
-#else
-#define ADDR_STR(x) (x).c_str()
-#endif
-
-#ifdef USE_ESP32
-
 namespace esphome {
 namespace atorch_dl24 {
 
 static const char *const TAG = "atorch_dl24";
-
-static const uint16_t DL24_SERVICE_UUID = 0xFFE0;
-static const uint16_t DL24_REPORT_CHARACTERISTIC_UUID = 0xFFE1;
-static const uint16_t DL24_COMMAND_CHARACTERISTIC_UUID = 0xFFE2;
 
 static const uint8_t START_OF_FRAME_BYTE1 = 0xFF;
 static const uint8_t START_OF_FRAME_BYTE2 = 0x55;
 
 static const uint8_t MESSAGE_TYPE_REPORT = 0x01;
 static const uint8_t MESSAGE_TYPE_REPLY = 0x02;
-static const uint8_t MESSAGE_TYPE_COMMAND = 0x11;
 
 static const uint8_t DEVICE_TYPE_AC_METER = 0x01;
 static const uint8_t DEVICE_TYPE_DC_METER = 0x02;
@@ -33,6 +20,19 @@ static const uint8_t DEVICE_TYPE_USB_METER = 0x03;
 static const uint8_t COMMAND_SUCCESS = 0x01;
 static const uint8_t COMMAND_FAILED = 0x02;
 static const uint8_t COMMAND_UNSUPPORTED = 0x03;
+
+#ifdef USE_ESP32
+static const uint16_t DL24_SERVICE_UUID = 0xFFE0;
+static const uint16_t DL24_REPORT_CHARACTERISTIC_UUID = 0xFFE1;
+static const uint16_t DL24_COMMAND_CHARACTERISTIC_UUID = 0xFFE2;
+static const uint8_t MESSAGE_TYPE_COMMAND = 0x11;
+
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 12, 0)
+#define ADDR_STR(x) x
+#else
+#define ADDR_STR(x) (x).c_str()
+#endif
+#endif
 
 uint8_t crc(const uint8_t data[], const uint16_t len) {
   uint8_t crc = 0;
@@ -45,6 +45,7 @@ uint8_t crc(const uint8_t data[], const uint16_t len) {
 }
 
 bool AtorchDL24::write_register(uint8_t device_type, uint8_t address, uint32_t value) {
+#ifdef USE_ESP32
   uint8_t frame[10];
   frame[0] = START_OF_FRAME_BYTE1;
   frame[1] = START_OF_FRAME_BYTE2;
@@ -66,6 +67,9 @@ bool AtorchDL24::write_register(uint8_t device_type, uint8_t address, uint32_t v
     ESP_LOGW(TAG, "[%s] esp_ble_gattc_write_char failed, status=%d", ADDR_STR(this->parent_->address_str()), status);
 
   return (status == 0);
+#else
+  return false;
+#endif
 }
 
 void AtorchDL24::dump_config() {
@@ -87,6 +91,7 @@ void AtorchDL24::dump_config() {
   LOG_TEXT_SENSOR(" ", "Runtime Formatted", this->runtime_formatted_text_sensor_);
 }
 
+#ifdef USE_ESP32
 void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
                                      esp_ble_gattc_cb_param_t *param) {
   switch (event) {
@@ -169,6 +174,7 @@ void AtorchDL24::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t g
       break;
   }
 }
+#endif
 
 // AC Meter
 //
@@ -483,5 +489,3 @@ void AtorchDL24::publish_state_(text_sensor::TextSensor *text_sensor, const std:
 
 }  // namespace atorch_dl24
 }  // namespace esphome
-
-#endif
