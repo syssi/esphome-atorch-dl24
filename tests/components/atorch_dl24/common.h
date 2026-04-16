@@ -17,7 +17,7 @@ class TestableAtorchDL24 : public AtorchDL24 {
 // ── Real frames from esp32-dc-meter-example-faker.yaml ────────────────────────
 // DC meter (device type 0x02), 36-byte report frames
 //
-// voltage=3.2V  current=19.968A  capacity=51.14Ah  energy=170.0Wh
+// voltage=3.2V  current=20.0A  capacity=51.14Ah  energy=170.0Wh
 // temperature=37°C  runtime=2h33m26s  dim_backlight=60s
 static const std::vector<uint8_t> DC_FRAME_1 = {
     0xFF, 0x55, 0x01, 0x02, 0x00, 0x00, 0x20, 0x00, 0x4E, 0x20, 0x00, 0x13, 0xFA, 0x00, 0x00, 0x00, 0x11, 0x00,

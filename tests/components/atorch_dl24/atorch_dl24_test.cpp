@@ -22,7 +22,7 @@ TEST(AtorchDL24DcMeterTest, Current) {
 
   atorch.decode_ac_and_dc_(DC_FRAME_1);
 
-  EXPECT_NEAR(current.state, 19.968f, 0.001f);
+  EXPECT_NEAR(current.state, 20.0f, 0.001f);
 }
 
 TEST(AtorchDL24DcMeterTest, Power) {
@@ -32,7 +32,7 @@ TEST(AtorchDL24DcMeterTest, Power) {
 
   atorch.decode_ac_and_dc_(DC_FRAME_1);
 
-  EXPECT_NEAR(power.state, 3.2f * 19.968f, 0.01f);
+  EXPECT_NEAR(power.state, 3.2f * 20.0f, 0.01f);
 }
 
 TEST(AtorchDL24DcMeterTest, Capacity) {
