@@ -1,0 +1,61 @@
+#pragma once
+#include <cstdint>
+#include <vector>
+#include "esphome/components/atorch_dl24/atorch_dl24.h"
+
+namespace esphome::atorch_dl24::testing {
+
+// Exposes protected decoder methods for direct testing.
+class TestableAtorchDL24 : public AtorchDL24 {
+ public:
+  using AtorchDL24::decode;
+  using AtorchDL24::decode_ac_and_dc_;
+  using AtorchDL24::decode_usb_;
+  using AtorchDL24::assemble;
+};
+
+// ── Real frames from esp32-dc-meter-example-faker.yaml ────────────────────────
+// DC meter (device type 0x02), 36-byte report frames
+//
+// voltage=3.2V  current=19.968A  capacity=51.14Ah  energy=170.0Wh
+// temperature=37°C  runtime=2h33m26s  dim_backlight=60s
+static const std::vector<uint8_t> DC_FRAME_1 = {
+    0xFF, 0x55, 0x01, 0x02, 0x00, 0x00, 0x20, 0x00, 0x4E, 0x20, 0x00, 0x13, 0xFA, 0x00, 0x00, 0x00, 0x11, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x00, 0x02, 0x21, 0x1A, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x09,
+};
+
+// second=27 (differs from DC_FRAME_1 second=26, used for running detection)
+static const std::vector<uint8_t> DC_FRAME_2 = {
+    0xFF, 0x55, 0x01, 0x02, 0x00, 0x00, 0x20, 0x00, 0x4E, 0x1E, 0x00, 0x13, 0xFA, 0x00, 0x00, 0x00, 0x11, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x25, 0x00, 0x02, 0x21, 0x1B, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x08,
+};
+
+// ── Real frames from esp32-ac-meter-example-faker.yaml ────────────────────────
+// AC meter (device type 0x01), 36-byte report frames
+//
+// voltage=230.8V  current=0.014A  capacity=0.04Ah  energy=0.0Wh
+// price_per_kwh=1.0  frequency=50.0Hz  power_factor=0.133
+// temperature=47°C  runtime=0h10m9s  dim_backlight=60s
+static const std::vector<uint8_t> AC_FRAME_1 = {
+    0xFF, 0x55, 0x01, 0x01, 0x00, 0x09, 0x04, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x64, 0x01, 0xF4, 0x00, 0x85, 0x00, 0x2F, 0x00, 0x00, 0x0A, 0x09, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x39,
+};
+
+// ── Real frames from esp32-usb-meter-example-faker.yaml ───────────────────────
+// USB meter (device type 0x03), 36-byte report frames
+//
+// voltage=4.99V  current=0.0A  capacity=1.592Ah  energy=7.85Wh
+// usb_data_minus=0.07V  usb_data_plus=0.10V  temperature=0°C
+// runtime=18h46m51s  dim_backlight=60s
+static const std::vector<uint8_t> USB_FRAME_1 = {
+    0xFF, 0x55, 0x01, 0x03, 0x00, 0x01, 0xF3, 0x00, 0x00, 0x00, 0x00, 0x06, 0x38, 0x00, 0x00, 0x03, 0x11, 0x00,
+    0x07, 0x00, 0x0A, 0x00, 0x00, 0x00, 0x12, 0x2E, 0x33, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4E,
+};
+
+// ── Reply frame ───────────────────────────────────────────────────────────────
+// 8-byte reply: command successful
+static const std::vector<uint8_t> REPLY_FRAME_SUCCESS = {
+    0xFF, 0x55, 0x02, 0x01, 0x01, 0x00, 0x00, 0x40,
+};
+
+}  // namespace esphome::atorch_dl24::testing
