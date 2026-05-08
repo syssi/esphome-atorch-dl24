@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/components/button/button.h"
 
-namespace esphome {
-namespace atorch_dl24 {
+namespace esphome::atorch_dl24 {
 
 class AtorchDL24;
 class AtorchButton : public button::Button, public Component {
@@ -22,5 +21,4 @@ class AtorchButton : public button::Button, public Component {
   uint8_t holding_register_;
 };
 
-}  // namespace atorch_dl24
-}  // namespace esphome
+}  // namespace esphome::atorch_dl24
