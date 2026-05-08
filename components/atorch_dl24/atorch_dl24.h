@@ -13,8 +13,7 @@
 namespace espbt = esphome::esp32_ble_tracker;
 #endif
 
-namespace esphome {
-namespace atorch_dl24 {
+namespace esphome::atorch_dl24 {
 
 class AtorchDL24 :
 #ifdef USE_ESP32
@@ -127,5 +126,4 @@ class AtorchDL24 :
   uint32_t throttle_{0};
 };
 
-}  // namespace atorch_dl24
-}  // namespace esphome
+}  // namespace esphome::atorch_dl24

@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
-namespace esphome {
-namespace atorch_dl24 {
+namespace esphome::atorch_dl24 {
 
 static const char *const TAG = "atorch_dl24.button";
 
@@ -18,5 +17,4 @@ void AtorchButton::press_action() {
   this->parent_->write_register(device_type, this->holding_register_, 0x00000000);
 }
 
-}  // namespace atorch_dl24
-}  // namespace esphome
+}  // namespace esphome::atorch_dl24

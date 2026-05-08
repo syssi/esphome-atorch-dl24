@@ -2,8 +2,7 @@
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
 
-namespace esphome {
-namespace atorch_dl24 {
+namespace esphome::atorch_dl24 {
 
 static const char *const TAG = "atorch_dl24";
 
@@ -487,5 +486,4 @@ void AtorchDL24::publish_state_(text_sensor::TextSensor *text_sensor, const std:
   text_sensor->publish_state(state);
 }
 
-}  // namespace atorch_dl24
-}  // namespace esphome
+}  // namespace esphome::atorch_dl24
