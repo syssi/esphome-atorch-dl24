@@ -1,7 +1,6 @@
 substitutions:
   name: atorch-usb-meter
   external_components_source: github://syssi/esphome-atorch-dl24@main
-  dl24_mac_address: !secret dl24_mac_address
   project_version: 2.4.0
   device_description: "Monitor and control a Atorch meter via bluetooth"
 
@@ -52,7 +51,7 @@ esp32_ble_tracker:
     active: false
 
 ble_client:
-  - mac_address: ${dl24_mac_address}
+  - mac_address: !secret dl24_mac_address
     id: client0
 
 atorch_dl24:

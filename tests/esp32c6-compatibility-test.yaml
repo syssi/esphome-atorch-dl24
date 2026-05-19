@@ -38,7 +38,7 @@ esp32_ble_tracker:
     active: false
 
 ble_client:
-  - mac_address: 41:B8:12:0A:A8:37
+  - mac_address: !secret dl24_mac_address
     id: ble_client0
 
 atorch_dl24:
