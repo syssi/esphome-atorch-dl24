@@ -3,7 +3,7 @@ substitutions:
   device0: meter0
   device1: meter1
   external_components_source: github://syssi/esphome-atorch-dl24@main
-  project_version: 2.4.0
+  project_version: 2.5.0
   device_description: "Monitor and control two Atorch meters via bluetooth"
 
 esphome:
