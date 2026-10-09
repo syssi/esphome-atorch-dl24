@@ -4,6 +4,7 @@ import esphome.config_validation as cv
 from esphome.const import CONF_ID, CONF_THROTTLE
 
 CODEOWNERS = ["@syssi"]
+DOMAIN = "atorch_dl24"
 DEPENDENCIES = ["ble_client"]
 AUTO_LOAD = ["binary_sensor", "button", "sensor", "text_sensor"]
 MULTI_CONF = True
