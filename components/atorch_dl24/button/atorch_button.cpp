@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::atorch_dl24 {
 
-static const char *const TAG = "atorch_dl24.button";
+ESPHOME_LOG_TAG(TAG, "atorch_dl24.button");
 
 void AtorchButton::dump_config() { LOG_BUTTON("", "AtorchDL24 Button", this); }
 void AtorchButton::press_action() {

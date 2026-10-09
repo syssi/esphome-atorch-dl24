@@ -2,9 +2,14 @@
 #include "esphome/core/log.h"
 #include "esphome/core/version.h"
 
+// Fallback for ESPHome < 2026.10.0
+#ifndef ESPHOME_LOG_TAG
+#define ESPHOME_LOG_TAG(name, tag) static const char *const name = tag
+#endif
+
 namespace esphome::atorch_dl24 {
 
-static const char *const TAG = "atorch_dl24";
+ESPHOME_LOG_TAG(TAG, "atorch_dl24");
 
 static const uint8_t START_OF_FRAME_BYTE1 = 0xFF;
 static const uint8_t START_OF_FRAME_BYTE2 = 0x55;
