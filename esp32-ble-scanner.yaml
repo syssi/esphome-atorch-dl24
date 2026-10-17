@@ -40,7 +40,7 @@ esp32_ble_tracker:
     then:
       - lambda: |-
           const std::string name = x.get_name();
-          if (name.rfind("-BLE", 0) == 0) {
+          if (name.find("-BLE") != std::string::npos) {
             ESP_LOGI("ble_adv", "New Atorch device found");
             ESP_LOGI("ble_adv", "  Name: %s", name.c_str());
             char addr_buf[MAC_ADDRESS_PRETTY_BUFFER_SIZE];
