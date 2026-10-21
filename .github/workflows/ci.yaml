@@ -278,7 +278,20 @@ jobs:
       - name: Run clang-format
         run: |
           . venv/bin/activate
-          git ls-files -z -- $(printf 'esphome/components/%s ' $(ls ../components/)) $(printf 'tests/components/%s ' $(ls ../tests/components/)) \
+          # Only format the sources of this project, not the ESPHome core tree
+          shopt -s nullglob
+          paths=()
+          for dir in ../components/*/; do
+            paths+=("esphome/components/$(basename "$dir")")
+          done
+          for dir in ../tests/components/*/; do
+            paths+=("tests/components/$(basename "$dir")")
+          done
+          if [ ${#paths[@]} -eq 0 ]; then
+            echo "No component directories found"
+            exit 0
+          fi
+          git ls-files -z -- "${paths[@]}" \
             | grep -zE '\.(c|cpp|h|hpp|tcc)$' \
             | xargs -0 -r clang-format -i
       - name: Suggested changes
