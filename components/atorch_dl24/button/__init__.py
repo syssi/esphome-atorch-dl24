@@ -46,7 +46,7 @@ BUTTONS = {
     CONF_USB_MINUS: 0x34,
 }
 
-AtorchButton = atorch_dl24_ns.class_("AtorchButton", button.Button, cg.Component)
+AtorchButton = atorch_dl24_ns.class_("AtorchButton", button.Button)
 
 CONFIG_SCHEMA = ATORCH_DL24_COMPONENT_SCHEMA.extend(
     {
@@ -88,6 +88,5 @@ async def to_code(config):
         if key in config:
             conf = config[key]
             var = await button.new_button(conf)
-            await cg.register_component(var, conf)
             cg.add(var.set_parent(hub))
             cg.add(var.set_holding_register(address))

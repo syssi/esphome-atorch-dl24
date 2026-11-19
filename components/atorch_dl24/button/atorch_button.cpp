@@ -10,7 +10,6 @@ namespace esphome::atorch_dl24 {
 
 ESPHOME_LOG_TAG(TAG, "atorch_dl24.button");
 
-void AtorchButton::dump_config() { LOG_BUTTON("", "AtorchDL24 Button", this); }
 void AtorchButton::press_action() {
   uint8_t device_type = this->parent_->get_device_type();
   if (device_type == 0x00) {
